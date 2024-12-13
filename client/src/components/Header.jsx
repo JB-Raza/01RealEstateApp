@@ -33,7 +33,7 @@ function Header() {
                         <NavLink to='/about'>
                             <li className='nav-link'>About</li>
                         </NavLink>
-                        <NavLink to='/sign-in'>
+                        <NavLink to='/signin'>
                             <li className='nav-link'>Sign-in</li>
                         </NavLink>
                     </ul>
