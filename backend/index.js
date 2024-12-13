@@ -25,8 +25,6 @@ app.use("/api/auth", authRouter)
 
 
 
-
-
 app.listen(3000, () => {
     console.log("server active on 3000")
 })
