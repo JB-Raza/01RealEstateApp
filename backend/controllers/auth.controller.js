@@ -35,3 +35,44 @@ export const signin = async (req, res, next) => {
         next(error)
     }
 }
+
+export const google = async (req, res, next) => {
+    try {
+        const { name, email, photo } = req.body
+        const user = await User.findOne({ email })
+
+        if (user) {
+            const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+            const {password: pass, ...rest} = user._doc
+            res
+            .cookie("access_token", token, {httpOnly: true})
+            .status(200)
+            .json(rest)
+        }
+        else {
+            // generating a random password for user
+            const randomPassword = Math.random().toString(36).slice(-8)
+            console.log(email, name, randomPassword)
+            const hashedPass = bcryptjs.hashSync(randomPassword, 10)
+
+            // username should be unique so we are adding some random values at the end of username so it stays unique
+            const username = name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4)
+
+            // new user
+            const newUser = new User({ username, email, password: hashedPass, avatar: photo })
+            const savedUser = await newUser.save()
+            console.log(savedUser)
+
+            const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
+            const {password: pass, ...rest} = user._doc
+            res
+            .cookie("access_token", token, {httpOnly: true})
+            .status(200)
+            .json(rest)
+        }
+    } catch (error) {
+        next(error)
+    }
+
+
+}

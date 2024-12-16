@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import {useSelector, useDispatch} from "react-redux"
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
+import OAuth from '../components/OAuth'
 
 
 function SignIn() {
   const [formData, setFormData] = useState({})
-  const {loading, error} = useSelector((state) => state.user)
+  let { loading, error } = useSelector((state) => state.user)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -20,7 +21,7 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch(signInStart)
+      dispatch(signInStart())
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -64,12 +65,12 @@ function SignIn() {
         />
         <button type='submit'
           disabled={loading}
-          className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-80 disabled:opacity-70'
+          className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
         >{loading ? "loading..." : "login"}</button>
+        <OAuth />
 
-        <button type='button' className='my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-red-600 text-white rounded-md w-full active:scale-95 hover:opacity-80 disabled:opacity-70'>CONTINUE WITH GOOGLE</button>
       </form>
-      <div className='flex gap-2'>
+      <div className='flex gap-2 my-2'>
         <p>Dont have an account?</p>
         <Link to="/signup" className='text-blue-800 font-semibold'>
           <span>Sign-up</span>
