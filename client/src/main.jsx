@@ -8,15 +8,18 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import App from './App.jsx'
 import './index.css'
+import PrivateRoute from './components/PrivateRoute.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />} >
       <Route index element={<Home />} />
       <Route path='about' element={<About />} />
-      <Route path='profile' element={<Profile />} />
       <Route path='signin' element={<SignIn />} />
       <Route path='signup' element={<SignUp />} />
+      <Route element={<PrivateRoute />} >
+        <Route path='profile' element={<Profile />} />
+      </Route>
 
     </Route>
   )

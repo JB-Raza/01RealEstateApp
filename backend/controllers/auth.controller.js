@@ -52,7 +52,6 @@ export const google = async (req, res, next) => {
         else {
             // generating a random password for user
             const randomPassword = Math.random().toString(36).slice(-8)
-            console.log(email, name, randomPassword)
             const hashedPass = bcryptjs.hashSync(randomPassword, 10)
 
             // username should be unique so we are adding some random values at the end of username so it stays unique
@@ -60,8 +59,7 @@ export const google = async (req, res, next) => {
 
             // new user
             const newUser = new User({ username, email, password: hashedPass, avatar: photo })
-            const savedUser = await newUser.save()
-            console.log(savedUser)
+            await newUser.save()
 
             const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
             const {password: pass, ...rest} = user._doc

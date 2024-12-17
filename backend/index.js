@@ -2,6 +2,7 @@ import express from 'express'
 const app = express()
 import mongoose from "mongoose"
 import dotenv from 'dotenv'
+import methodOverride from 'method-override'
 
 
 dotenv.config()
@@ -13,13 +14,15 @@ app.listen(3000, () => {
     console.log("server active on 3000")
 })
 
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
+app.use(methodOverride("_method"))
+
+
 // routes 
 import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
 import User from './models/user.model.js'
-
-app.use(express.urlencoded({extended: true}))
-app.use(express.json())
 
 // api requests
 app.use("/api/user", userRouter)
