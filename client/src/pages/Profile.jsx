@@ -73,7 +73,7 @@ function Profile() {
         method: 'DELETE',
       })
       const data = await res.json()
-      if(res.ok && data.message){
+      if (res.ok && data.message) {
         console.log("user deleted successfully")
         dispatch(clearState())
         navigate('/signup')
@@ -82,6 +82,23 @@ function Profile() {
       console.log("error in deleting == ", error.message)
     }
   }
+  const handleSignoutSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await fetch('/api/auth/signout', {
+        method: 'POST',
+      })
+      const data = await res.json()
+      if (res.ok && data.message) {
+        console.log("user signed out successfully")
+        dispatch(clearState())
+        navigate('/signin')
+      }
+    } catch (error) {
+      console.log("error in signing out == ", error.message)
+    }
+  }
+
 
   return (
     <div className='max-w-lg mx-auto px-4'>
@@ -144,11 +161,13 @@ function Profile() {
       <div className='flex justify-between my-2'>
         <form
           onSubmit={handleDeleteSubmit}
-          >
+        >
           <button className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
 
         </form>
-        <span className='text-blue-700 font-semibold cursor-pointer'>Sign out</span>
+        <form onSubmit={handleSignoutSubmit} >
+          <button className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
+        </form>
       </div>
 
     </div>
