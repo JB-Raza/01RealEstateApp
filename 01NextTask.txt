@@ -1,0 +1,4 @@
+//                                            delete user functionality.
+sign out functionality.
+clear redux state as user deleted or signed out.
+delete images from cloudinary as they are deleted from the database.

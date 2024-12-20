@@ -5,16 +5,26 @@ import dotenv from 'dotenv'
 import methodOverride from 'method-override'
 
 
+const mongoConnection = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URL)
+        console.log("Connected to MongoDB");
+    }  catch (error) {
+        console.log("ERROR in Mongo connection == ", error);
+        if (error.cause) {
+            console.log("Cause details: ", error.cause);
+        }
+    }
+}
+mongoConnection()
 dotenv.config()
-mongoose.connect(process.env.MONGO_URL)
-.then(() => console.log("connected to db") )
-.catch((err) => console.log(err))
+
 
 app.listen(3000, () => {
     console.log("server active on 3000")
 })
 
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(methodOverride("_method"))
 
@@ -28,14 +38,14 @@ import User from './models/user.model.js'
 app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter)
 
-app.delete("/clear-all", async(req, res, next) => {
+app.delete("/clear-all", async (req, res, next) => {
     try {
         const data = await User.deleteMany({})
-        res.send(data)    
+        res.send(data)
     } catch (error) {
         next(error)
     }
-    
+
 })
 
 // middleware

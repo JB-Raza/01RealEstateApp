@@ -1,54 +1,85 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice'
-import {useNavigate} from 'react-router-dom'
+import { updateStart, updateSuccess, updateFailure, clearState } from '../redux/user/userSlice.js'
+
+
 
 function Profile() {
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
   const currUser = useSelector(state => state.user.currentUser)
-  const {loading} = useSelector(state => state.user)
-  const [error, setError] = useState("")
+  const { loading, error } = useSelector(state => state.user)
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const fileRef = useRef(null)
+  const [imagePreview, setImagePreview] = useState(currUser.avatar)
 
   const [formData, setFormData] = useState({
     username: currUser.username,
     email: currUser.email,
     avatar: currUser.avatar,
-    oldPassword: "",
-    newPassword: "",
+    oldPassword: '',
+    newPassword: '',
+
   })
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value
-    })
+  const handleImgChange = (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result)
+    }
+    reader.readAsDataURL(file)
   }
 
-  const handleSubmit = async (e) => {
+  const handleUpdateSubmit = async (e) => {
     e.preventDefault()
+
     try {
       dispatch(updateStart())
-      const result = await fetch("/api/user/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData)
-      })
 
-      const data = await result.json()
-      if (!data.success) {
-        dispatch(updateFailure())
-        setError(data.message)
-        return
+      const form = new FormData()
+      form.append('avatar', fileRef.current.files[0])
+      form.append('username', formData.username)
+      form.append('email', formData.email)
+      form.append("oldPassword", formData.oldPassword)
+      form.append("newPassword", formData.newPassword)
+
+
+      const res = await fetch('/api/user/update', {
+        method: 'PUT',
+        body: form,
+      })
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        dispatch(updateSuccess(data.updatedUser))
+        navigate('/')
       }
-      dispatch(updateSuccess(data))
-      navigate('/')
+      else dispatch(updateFailure(data.message))
     } catch (error) {
-      setError(error.message)
-      dispatch(updateFailure())
+      console.log("ERROR in API == ", error)
+      dispatch(updateFailure(error.message))
+    }
+
+  }
+
+  const handleDeleteSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      const res = await fetch(`/api/user/delete/${currUser._id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if(res.ok && data.message){
+        console.log("user deleted successfully")
+        dispatch(clearState())
+        navigate('/signup')
+      }
+    } catch (error) {
+      console.log("error in deleting == ", error.message)
     }
   }
 
@@ -56,50 +87,75 @@ function Profile() {
     <div className='max-w-lg mx-auto px-4'>
       <h1 className='text-center my-5 text-3xl font-bold'>Profile</h1>
 
-      <img src={currUser.avatar} alt=""
-        className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-36 sm:w-52 h-36 sm:h-52 object-cover hover:shadow-xl hover:scale-105'
-      />
+      <form onSubmit={handleUpdateSubmit}>
 
-      <form action='auth/user/update?_method=PUT' method='post'
-        onSubmit={handleSubmit}
-      >
+        {/* accessing the image file only */}
+        <input type="file" hidden
+          name='avatar'
+          ref={fileRef} accept='image/*'
+          onChange={handleImgChange}
+        />
+
+        <img src={imagePreview}
+          onClick={() => fileRef.current.click()}
+          className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-36 sm:w-52 h-36 sm:h-52 object-cover hover:shadow-xl hover:scale-105'
+        />
+        {/* error handing */}
+        <div className="error">
+          {error && <p className='text-red-500 text-center'>{error}</p>}
+        </div>
+
+        {/* username */}
         <input type="text" placeholder='Username' name='username' id='username'
           className='input-box'
           value={formData.username}
-          disabled={true}
+          readOnly
         />
+        {/* email */}
         <input type="email" placeholder='Email' name='email' id='email'
           value={formData.email}
           className='input-box'
-          disabled={true}
+          readOnly
         />
-        <input type="password" placeholder='Old Password' name='oldPassword' id='oldPassword'
-          className='input-box'
+        {/* old Password */}
+        <input type="password" placeholder='old Password' name='oldPassword' id='oldPassword'
           value={formData.oldPassword}
-          onChange={handleInputChange}
-        />
-        <input type="password" placeholder='New Password' name='newPassword' id='newPassword'
           className='input-box'
-          value={formData.newPassword}
-          onChange={handleInputChange}
+          onChange={(e) => setFormData({ ...formData, oldPassword: e.target.value })}
         />
+        {/* new Password */}
+        <input type="password" placeholder='new Password' name='newPassword' id='newPassword'
+          value={formData.newPassword}
+          className='input-box'
+          onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+        />
+
         <button type='submit'
-        disabled = {loading}
+          disabled={loading}
           className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
-        >{loading?"loading...":"Update"}</button>
+        >{loading ? "loading..." : "Update"}</button>
+
         <button type='button'
           className='uppercase py-3 outline-none font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
         >Create Listing</button>
+
       </form>
+
       <div className='flex justify-between my-2'>
-        <span className='text-red-700 font-semibold cursor-pointer'>Delete Account</span>
+        <form
+          onSubmit={handleDeleteSubmit}
+          >
+          <button className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
+
+        </form>
         <span className='text-blue-700 font-semibold cursor-pointer'>Sign out</span>
       </div>
-      <div className="error">
-        {error && <p className=''><span className='text-red-700 font-semibold'>ERROR: </span>{ error }</p>}
-      </div>
+
     </div>
   )
 }
 
 export default Profile
+
+
+

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 function Header() {
 
-    const currUser = useSelector((state) => state.user.currentUser)
+    const currUser  = useSelector((state) => state.user.currentUser)
 
     return (
         <header className='bg-slate-200 p-2 min-w-screen shadow-sm'>
@@ -36,16 +36,19 @@ function Header() {
                         <NavLink to='/about'>
                             <li className='nav-link'>About</li>
                         </NavLink>
-                        <NavLink to='/signin'>
-                            {currUser ?
-                                <Link to="/profile">
-                                    <img src={currUser.avatar} alt="profile"
+
+                        {currUser ? (
+                            <Link to="/profile">
+                                <img src={currUser.avatar} alt="profile"
                                         className="rounded-full w-10 h-10 object-cover"
                                     />
                                 </Link>
-                                :
-                                <li className='nav-link'>Sign-in</li>}
-                        </NavLink>
+                        ) : (
+                            <NavLink to='/signin'>
+                                <li className='nav-link'>Sign-in</li>
+                            </NavLink>
+                        ) }
+
                     </ul>
                 </nav>
             </div>
