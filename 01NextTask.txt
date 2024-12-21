@@ -4,4 +4,4 @@
 
 
 delete account from firebase when account deleted from database.
-delete images from cloudinary as they are deleted from the database.
+delete images from cloudinary when image deleted from the database.

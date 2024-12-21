@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import OAuth from '../components/OAuth'
 
@@ -7,7 +7,19 @@ function SignUp() {
   const [formData, setFormData] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+
   const navigate = useNavigate()
+  const fileRef = useRef(null)
+  const [imagePreview, setImagePreview] = useState(null)
+
+  const handleImgChange = (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result)
+    }
+    reader.readAsDataURL(file)
+  }
 
   const handleChange = (e) => {
     setFormData({
@@ -20,12 +32,17 @@ function SignUp() {
     e.preventDefault()
     try {
       setLoading(true)
+      const form = new FormData()
+      form.append('avatar', fileRef.current.files[0])
+      form.append('username', formData.username)
+      form.append('email', formData.email)
+      form.append('password', formData.password)
+
       const res = await fetch("/api/auth/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        // headers: { "Content-Type": "application/json"}, // no need for this since we are using FormData as it sets the headers to multipart/form-data
+        // body: JSON.stringify(form),  // for sending textual data and not files
+        body: form,
       })
       const data = await res.json()
       if (data.success === false) {
@@ -46,42 +63,57 @@ function SignUp() {
 
 
   return (
-    <div className='max-w-lg px-6 mx-auto'>
+    <div className='max-w-[1000px] mx-auto px-4 py-8'>
 
       <h1 className='text-center my-6 font-semibold text-3xl'>Sign Up</h1>
 
       <form
         action="api/auth/signup" method='post'
-        className='flex flex-col'
+        className='flex flex-col sm:flex-row gap-3 items-center w-full'
         onSubmit={handleSubmit}
       >
-        
-        <input type="text" placeholder='Username' name='username' id='username'
-          className='input-box'
-          onChange={handleChange}
-        />
-        <input type="email" placeholder='Email' name='email' id='email'
-          className='input-box'
-          onChange={handleChange}
-        />
-        <input type="password" placeholder='Password' name='password' id='password'
-          className='input-box'
-          onChange={handleChange}
-        />
-        <button type='submit'
-          disabled={loading}
-          className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
-        >{loading ? "loading..." : "sign up"}</button>
-        <OAuth />
-      </form>
-      <div className='flex gap-2 my-2'>
-        <p>Have an account?</p>
-        <Link to="/signin" className='text-blue-800 font-semibold'>
-          <span>Sign-in</span>
-        </Link>
-      </div>
+        {/* image upload */}
+        <div className='m-auto w-1/3 h-1/3'>
 
-      {error && <p className='text-red-600 my-2'>{error}</p>}
+          <input type="file" name="avatar" id="avatar" ref={fileRef} hidden
+            onChange={handleImgChange}
+          />
+          <img src={imagePreview || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKaiKiPcLJj7ufrj6M2KaPwyCT4lDSFA5oog&s"}
+            className='rounded-full mx-auto my-4 w-36 h-36 sm:w-56 sm:h-56 object-cover shadow-lg cursor-pointer hover:shadow-xl hover:scale-105'
+            onClick={() => fileRef.current.click()}
+          />
+        </div>
+
+        {/* other form info */}
+        <div className='w-2/3'>
+          <input type="text" placeholder='Username' name='username' id='username'
+            className='input-box'
+            onChange={handleChange}
+          />
+          <input type="email" placeholder='Email' name='email' id='email'
+            className='input-box'
+            onChange={handleChange}
+          />
+          <input type="password" placeholder='Password' name='password' id='password'
+            className='input-box'
+            onChange={handleChange}
+          />
+          <button type='submit'
+            disabled={loading}
+            className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+          >{loading ? "loading..." : "sign up"}</button>
+          <OAuth />
+          <div className='flex gap-2 my-2'>
+            <p>Have an account?</p>
+            <Link to="/signin" className='text-blue-800 font-semibold'>
+              <span>Sign-in</span>
+            </Link>
+          </div>
+          {error && <p className='text-red-600 my-2'>{error}</p>}
+        </div>
+
+      </form>
+
     </div>
 
   )
