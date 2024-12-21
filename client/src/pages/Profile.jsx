@@ -65,9 +65,7 @@ function Profile() {
 
   }
 
-  const handleDeleteSubmit = async (e) => {
-    e.preventDefault()
-
+  const handleDeleteUser = async () => {
     try {
       const res = await fetch(`/api/user/delete/${currUser._id}`, {
         method: 'DELETE',
@@ -82,8 +80,7 @@ function Profile() {
       console.log("error in deleting == ", error.message)
     }
   }
-  const handleSignoutSubmit = async (e) => {
-    e.preventDefault()
+  const handleSignoutUser = async () => {
     try {
       const res = await fetch('/api/auth/signout', {
         method: 'POST',
@@ -115,7 +112,7 @@ function Profile() {
 
         <img src={imagePreview}
           onClick={() => fileRef.current.click()}
-          className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-36 sm:w-52 h-36 sm:h-52 object-cover hover:shadow-xl hover:scale-105'
+          className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-24 sm:w-36 h-24 sm:h-36 object-cover hover:shadow-xl hover:scale-105'
         />
         {/* error handing */}
         {/* <div className="error"> */}
@@ -159,15 +156,8 @@ function Profile() {
       </form>
 
       <div className='flex justify-between my-2'>
-        <form
-          onSubmit={handleDeleteSubmit}
-        >
-          <button className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
-
-        </form>
-        <form onSubmit={handleSignoutSubmit} >
-          <button className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
-        </form>
+          <button onClick={handleDeleteUser} className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
+          <button onClick={handleSignoutUser} className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
       </div>
 
     </div>

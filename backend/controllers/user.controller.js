@@ -4,9 +4,9 @@ import { errorHandler } from '../utils/error.js'
 
 export const updateUser = async (req, res, next) => {
     const userId = req.params.id;
-    if(req.user.id !== userId) return next(errorHandler(403, "You can only update your account"))
+    if (req.user.id !== userId) return next(errorHandler(403, "You can only update your account"))
     try {
-        const imageUrl = req.file?.path        
+        const imageUrl = req.file?.path
         const { email, oldPassword, newPassword } = req.body;
         if (!email) return next(errorHandler(400, "Email is required"));
 
@@ -25,31 +25,33 @@ export const updateUser = async (req, res, next) => {
             validUser.password = hashedPass;
         }
         await validUser.save()
-        const {password, ...restOfUser} = validUser._doc
+        const { password, ...restOfUser } = validUser._doc
         return res.status(200).json({
             success: true,
             message: "User updated successfully",
             updatedUser: restOfUser,
         });
-        
+
     } catch (error) {
         return next(errorHandler(500, "Server error bhai : " + error.message));
     }
 };
 // delete user functionality not working
 export const deleteUser = async (req, res, next) => {
+    const { id } = req?.params;
+    if (req.user.id !== id) return next(errorHandler(403, "You can only delete your account while logged in"))
     try {
-        const {id} = req?.params;
-    if(id){
-        await User.findByIdAndDelete(id);
-        res.status(200).json({
-            success: true,
-            message: "User deleted successfully",
-        })
-    }
-    else console.log('User not found')
+        if (id) {
+            await User.findByIdAndDelete(id);
+            res.clearCookie('access_token')
+            res.status(200).json({
+                success: true,
+                message: "User deleted successfully",
+            });
+        }
+        else console.log('User not found')
     } catch (error) {
         return next(errorHandler(500, "delete user error on server side : " + error.message));
-        
+
     }
 }

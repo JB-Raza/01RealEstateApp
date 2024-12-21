@@ -6,7 +6,7 @@ import { verifyUser } from "../utils/verifyUser.js"
 const router = express.Router({mergeParams: true})
 
 router.put("/update/:id", verifyUser, upload.single("avatar"), updateUser)
-router.delete("/delete/:id", deleteUser)
+router.delete("/delete/:id", verifyUser, deleteUser)
 
 
 export default router
