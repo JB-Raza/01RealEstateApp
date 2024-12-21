@@ -47,7 +47,7 @@ function Profile() {
       form.append("newPassword", formData.newPassword)
 
 
-      const res = await fetch('/api/user/update', {
+      const res = await fetch(`/api/user/update/${currUser._id}`, {
         method: 'PUT',
         body: form,
       })
@@ -118,9 +118,9 @@ function Profile() {
           className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-36 sm:w-52 h-36 sm:h-52 object-cover hover:shadow-xl hover:scale-105'
         />
         {/* error handing */}
-        <div className="error">
+        {/* <div className="error"> */}
           {error && <p className='text-red-500 text-center'>{error}</p>}
-        </div>
+        {/* </div> */}
 
         {/* username */}
         <input type="text" placeholder='Username' name='username' id='username'

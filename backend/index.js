@@ -2,7 +2,7 @@ import express from 'express'
 const app = express()
 import mongoose from "mongoose"
 import dotenv from 'dotenv'
-import methodOverride from 'method-override'
+import cookieParser from 'cookie-parser'
 
 
 const mongoConnection = async () => {
@@ -26,7 +26,7 @@ app.listen(3000, () => {
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(methodOverride("_method"))
+app.use(cookieParser())
 
 
 // routes 
