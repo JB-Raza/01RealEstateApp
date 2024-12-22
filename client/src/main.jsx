@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
-import { Home, About, SignIn, SignUp, Profile } from './pages/index.js'
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom'
+import { Home, About, SignIn, SignUp, Profile, AddListing } from './pages/index.js'
 
 import { Provider } from 'react-redux'
 import { persistor, store } from './redux/store.js'
@@ -20,6 +20,7 @@ const router = createBrowserRouter(
       <Route element={<PrivateRoute />} >
         <Route path='profile' element={<Profile />} />
       </Route>
+      <Route path='listing/new' element={<AddListing/>} />
 
     </Route>
   )

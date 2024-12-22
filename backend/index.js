@@ -28,16 +28,22 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser())
 
-
+// models
+import User from './models/user.model.js'
+import Listing from './models/listing.model.js'
 // routes 
 import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
-import User from './models/user.model.js'
+import listingRouter from './routes/listing.route.js'
 
 // api requests
 app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter)
+app.use("/api/listings", listingRouter)
 
+
+
+// delete all users
 app.delete("/clear-all", async (req, res, next) => {
     try {
         const data = await User.deleteMany({})
@@ -45,7 +51,14 @@ app.delete("/clear-all", async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-
+})
+app.delete("/listings/clear-all", async (req, res, next) => {
+    try {
+        const data = await Listing.deleteMany({})
+        res.send(data)
+    } catch (error) {
+        next(error)
+    }
 })
 
 // middleware

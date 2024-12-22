@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateStart, updateSuccess, updateFailure, clearState } from '../redux/user/userSlice.js'
 
@@ -116,7 +116,7 @@ function Profile() {
         />
         {/* error handing */}
         {/* <div className="error"> */}
-          {error && <p className='text-red-500 text-center'>{error}</p>}
+        {error && <p className='text-red-500 text-center'>{error}</p>}
         {/* </div> */}
 
         {/* username */}
@@ -149,15 +149,16 @@ function Profile() {
           className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
         >{loading ? "loading..." : "Update"}</button>
 
-        <button type='button'
-          className='uppercase py-3 outline-none font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
-        >Create Listing</button>
-
+        <Link to='/listing/new'>
+          <button type='button'
+            className='uppercase py-3 outline-none font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+          >Create Listing</button>
+        </Link>
       </form>
 
       <div className='flex justify-between my-2'>
-          <button onClick={handleDeleteUser} className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
-          <button onClick={handleSignoutUser} className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
+        <button onClick={handleDeleteUser} className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
+        <button onClick={handleSignoutUser} className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
       </div>
 
     </div>
