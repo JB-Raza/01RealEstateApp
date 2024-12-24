@@ -71,6 +71,7 @@ function Profile() {
         method: 'DELETE',
       })
       const data = await res.json()
+      console.log("data == ", data)
       if (res.ok && data.message) {
         console.log("user deleted successfully")
         dispatch(clearState())
@@ -123,13 +124,15 @@ function Profile() {
         <input type="text" placeholder='Username' name='username' id='username'
           className='input-box'
           value={formData.username}
-          readOnly
+          // readOnly
+          disabled
         />
         {/* email */}
         <input type="email" placeholder='Email' name='email' id='email'
           value={formData.email}
           className='input-box'
-          readOnly
+          // readOnly
+          disabled
         />
         {/* old Password */}
         <input type="password" placeholder='old Password' name='oldPassword' id='oldPassword'
@@ -151,7 +154,7 @@ function Profile() {
 
         <Link to='/listing/new'>
           <button type='button'
-            className='uppercase py-3 outline-none font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+            className='uppercase py-3 outline-none border-0 font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
           >Create Listing</button>
         </Link>
       </form>

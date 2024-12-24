@@ -1,7 +1,10 @@
 import bcryptjs from 'bcryptjs'
 import User from "../models/user.model.js"
+import Listing from '../models/listing.model.js'
 import { errorHandler } from '../utils/error.js'
+import cloudinary from '../file_upload/cloudinaryConfig.js'
 
+// update user
 export const updateUser = async (req, res, next) => {
     const userId = req.params.id;
     if (req.user.id !== userId) return next(errorHandler(403, "You can only update your account"))
@@ -36,20 +39,55 @@ export const updateUser = async (req, res, next) => {
         return next(errorHandler(500, "Server error bhai : " + error.message));
     }
 };
-// delete user functionality not working
+
+// delete user
 export const deleteUser = async (req, res, next) => {
     const { id } = req?.params;
     if (req.user.id !== id) return next(errorHandler(403, "You can only delete your account while logged in"))
     try {
         if (id) {
-            await User.findByIdAndDelete(id);
+            const user = await User.findById(id)
+            if (!user) return next(errorHandler(404, "The User you are trying to delete does not exist"))
+
+            // delete images in cloudinary using publicId
+            const deleteUserImg = async () => {
+                const getPublicId = (url) => {
+                    if (!url || typeof url !== 'string') {
+                        console.error("Invalid Cloudinary URL");
+                        return null;
+                    }
+                    const segments = url.split("/"); // Split the URL by "/"
+                    const versionIndex = segments.findIndex(segment => segment.startsWith("v")); // Find the version segment
+                    if (versionIndex === -1) {
+                        console.error("Version identifier not found in URL");
+                        return null;
+                    }
+                    // Reconstruct the path excluding the base URL and version identifier
+                    return segments.slice(versionIndex + 1).join("/").split(".")[0];
+                };
+                
+                const publicId = getPublicId(user.avatar)
+                if (!publicId) return next(errorHandler(400, "Failed to extract publicId from the provided URL"));
+    
+                // Delete the image from Cloudinary
+                const cloudinaryResponse = await cloudinary.uploader.destroy(publicId);
+                if (cloudinaryResponse.result !== "ok") return next(errorHandler(500, "Failed to delete image from Cloudinary"));
+    
+            }
+            deleteUserImg()
+
+            // deleting all listings of user
+            await Listing.deleteMany({ userRef: id })
+            // delete the user
+            await User.findByIdAndDelete(id)
+
             res.clearCookie('access_token')
             res.status(200).json({
                 success: true,
                 message: "User deleted successfully",
             });
         }
-        else console.log('User not found')
+        else next(errorHandler(404, "User not found"))
     } catch (error) {
         return next(errorHandler(500, "delete user error on server side : " + error.message));
 

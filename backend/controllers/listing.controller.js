@@ -1,6 +1,11 @@
 import Listing from '../models/listing.model.js'
 import { errorHandler } from '../utils/error.js'
 
+export const allListings = async (req, res, next) => {
+    const listings = await Listing.find()
+    res.json(listings)
+}
+
 export const addListing = async (req, res, next) => {
     // check if user logged in
     const userId = req.user.id
@@ -9,8 +14,9 @@ export const addListing = async (req, res, next) => {
         const images = req.files.map((image) => {
             return image.path
         })
-
         const data = req.body
+        if(data.discountedPrice == "undefined") data.discountedPrice = 0
+        
         const newListing = new Listing({ ...data, userRef: userId, images })
         await newListing.save()
 

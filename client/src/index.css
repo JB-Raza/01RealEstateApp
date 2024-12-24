@@ -23,6 +23,7 @@
     font-semibold text-sm sm:text-base
     w-full
     shadow-md
-    focus:scale-x-105
+    /* focus:scale-x-105 */
+    focus:border-2 focus:border-green-400
     transition-all duration-75
 }

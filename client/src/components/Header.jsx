@@ -39,7 +39,7 @@ function Header() {
 
                         {currUser ? (
                             <Link to="/profile">
-                                <img src={currUser.avatar} alt="profile"
+                                <img src={currUser.avatar}
                                         className="rounded-full w-10 h-10 object-cover"
                                     />
                                 </Link>

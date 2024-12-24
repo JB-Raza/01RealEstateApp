@@ -1,7 +1,10 @@
 //                                            delete user functionality.
-//                                              sign out functionality.
-//                                    clear redux state as user deleted or signed out.
+//                                             sign out functionality.
+//                                   clear redux state as user deleted or signed out.
+//                          delete images from cloudinary when image deleted from the database.
 
+setup home.jsx
+
+when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin to get that data in my state.
 
 delete account from firebase when account deleted from database.
-delete images from cloudinary when image deleted from the database.

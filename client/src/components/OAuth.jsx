@@ -1,7 +1,7 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 import { app } from '../firebase'
 import { useDispatch } from 'react-redux'
-import { signInSuccess } from '../redux/user/userSlice.js'
+import { signInFailure, signInSuccess } from '../redux/user/userSlice.js'
 import {useNavigate} from 'react-router-dom'
 
 function OAuth() {
@@ -24,7 +24,9 @@ function OAuth() {
           photo: result.user.photoURL
         })
       })
+      console.log(res)
       const data = await res.json()
+      console.log("data == ", data)
       dispatch(signInSuccess(data))
       navigate("/")
 

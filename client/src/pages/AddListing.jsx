@@ -73,18 +73,17 @@ function AddListing() {
         {/* col 1 rest of form */}
         <div className='first w-2/3'>
           {/* title */}
-          <input type="text" placeholder='Title' name='title' id='title' className='input-box'
+          <input type="text" placeholder='Title' name='title' id='title' className='input-box focus:scale-100'
             onChange={handleInputChange}
           />
           {/* description */}
-          <textarea name="description" id="description" className='input-box' placeholder='Description'
+          <textarea name="description" id="description" className='input-box focus:scale-100' placeholder='Description'
             onChange={handleInputChange}
           ></textarea>
           <div className='flex gap-2'>
             {/* type */}
             <select name="type" id="type" className='input-box focus:scale-100'
               onChange={handleInputChange}
-              
             >
               <option value="select">select</option>
               <option value="Standard">Standard</option>
@@ -105,7 +104,7 @@ function AddListing() {
             </select>
           </div>
           {/* address */}
-          <input type="text" placeholder='Address' name='address' id='address' className='input-box'
+          <input type="text" placeholder='Address' name='address' id='address' className='input-box focus:scale-100'
             onChange={handleInputChange}
           />
           <div className='flex gap-2'>
@@ -119,6 +118,7 @@ function AddListing() {
             />
           </div>
         </div>
+
         {/* col 2 contact and images */}
         <div className='second w-2/3 md:w-1/3'>
           {/* contact */}
@@ -127,10 +127,9 @@ function AddListing() {
           />
           <p className='text-sm text-gray-600'> <b>Images:</b> The first Image will be the Cover (max 4) </p>
           {/* image */}
-          <input type="file" name='images' id='images' className='input-box' accept="image/*" multiple
-            onChange={handleImgChange}
-          />
-          <button className='text-white rounded-md py-2 text-lg font-semibold cursor-pointer w-full bg-slate-700 hover:bg-slate-800'>Create Listing</button>
+          <input type="file" name='images' id='images' className='input-box focus:scale-100 ' accept="image/*" multiple
+            onChange={handleImgChange} />
+          <button className='text-white rounded-md py-3 text-lg font-semibold cursor-pointer w-full bg-slate-700 hover:bg-slate-800 outline-none'>Create Listing</button>
         </div>
       </form>
     </div>
