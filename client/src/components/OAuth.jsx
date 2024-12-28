@@ -26,7 +26,6 @@ function OAuth() {
       })
       console.log(res)
       const data = await res.json()
-      console.log("data == ", data)
       dispatch(signInSuccess(data))
       navigate("/")
 

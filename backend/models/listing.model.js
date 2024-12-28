@@ -14,16 +14,18 @@ const listingSchema = new Schema({
         type: String,
         required: true,
     },   
-    type: {
+    category: {
         type: String,
         default: "Standard",
-        enum: ["Standard", "Mansion", "Villa", "Furnished", "Cottage", "Palace"],
-        // required: true,
+        enum: ["Standard", "Mansion", "Villa", "Cottage", "Palace"],
     },
-    service: {
+    rentOrSale: {
         type: String,
         default: "rent",
         enum: ["rent", "sale"],
+    },
+    services: {
+        type: [String],
     },
     contact: {
         type: String,

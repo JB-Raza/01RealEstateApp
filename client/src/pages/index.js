@@ -1,11 +1,11 @@
-import Home from "./Home";
-import About from "./About";
-import Profile from "./Profile"
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
-import AddListing from './AddListing'
-import ListingPage from './ListingPage'
+import Home from "./Home.jsx";
+import About from "./About.jsx";
+import Profile from "./Profile.jsx"
+import SignIn from "./SignIn.jsx";
+import SignUp from "./SignUp.jsx";
+import AddListing from './AddListing.jsx'
+import Listing from './Listing.jsx'
 
 export {
-    Home, About, Profile, SignIn, SignUp, AddListing, ListingPage
+    Home, About, Profile, SignIn, SignUp, AddListing, Listing
 }

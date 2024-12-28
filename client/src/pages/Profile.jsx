@@ -1,8 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateStart, updateSuccess, updateFailure, clearState } from '../redux/user/userSlice.js'
-
 
 
 function Profile() {
@@ -23,6 +22,26 @@ function Profile() {
     newPassword: '',
 
   })
+  const [userListings, setUserListings] = useState([])
+
+  // get user listings
+  useEffect(() => {
+    const getUserListings = async () => {
+      const res = await fetch(`/api/listings/user/${currUser._id}`)
+      const data = await res.json()
+      setUserListings(data)
+    }
+    getUserListings()
+  }, [userListings])
+
+  const handleDeleteListing = async (listingId) => {
+    const res = await fetch(`api/listings/delete/${listingId}`, { method: "DELETE" })
+    const data = await res.json()
+    console.log("listing data == ", data)
+  }
+  const handleUpdateListing = async (listingId) => {
+    // const res = await fetch("/api/listings")
+  }
 
   const handleImgChange = (e) => {
     const file = e.target.files[0]
@@ -88,7 +107,7 @@ function Profile() {
       })
       const data = await res.json()
       if (res.ok && data.message) {
-        console.log("user signed out successfully")
+        // console.log("user signed out successfully")
         dispatch(clearState())
         navigate('/signin')
       }
@@ -96,7 +115,6 @@ function Profile() {
       console.log("error in signing out == ", error.message)
     }
   }
-
 
   return (
     <div className='max-w-lg mx-auto px-4'>
@@ -152,16 +170,38 @@ function Profile() {
           className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
         >{loading ? "loading..." : "Update"}</button>
 
-        <Link to='/listing/new'>
+        <Link to='/listings/new'>
           <button type='button'
             className='uppercase py-3 outline-none border-0 font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
           >Create Listing</button>
         </Link>
       </form>
 
+      {/* delete and signout user */}
       <div className='flex justify-between my-2'>
         <button onClick={handleDeleteUser} className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
         <button onClick={handleSignoutUser} className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
+      </div>
+
+      {/* all user listings */}
+      <div className='my-10'>
+        {userListings.length > 0 ? <h1 className='text-center text-2xl font-bold my-4'>All Listings</h1> : ""}
+        {userListings && userListings.map((listing, index) => (
+          <div key={index} className='flex gap-3 w-full items-center justify-between my-2 border-4 py-1 px-2'>
+              <img src={listing.images[0]} alt="img"
+                className='w-16 rounded-md hover:scale-105 transition-all duration-75'
+              />
+            <Link to={`/listings/${listing._id}`} className=''>
+              <h2 className='font-semibold text-lg text-center hover:underline'>{listing.title}</h2>
+            </Link>
+
+              {/* actions */}
+              <span className="actions flex flex-col">
+                <button className='text-green-600 font-semibold hover:text-green-800' onClick={() => handleUpdateListing(listing._id)}>Update</button>
+                <button className='text-red-600 font-semibold hover:text-red-800' onClick={() => handleDeleteListing(listing._id)} >Delete</button>
+              </span>
+          </div>
+        ))}
       </div>
 
     </div>

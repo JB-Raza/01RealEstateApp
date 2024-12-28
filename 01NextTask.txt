@@ -3,8 +3,14 @@
 //                                   clear redux state as user deleted or signed out.
 //                          delete images from cloudinary when image deleted from the database.
 
-setup home.jsx
+
+
+add listing image preview while creating a listing
+
+pagination or infinite scroll for displaying listings. this will not fetch all listings at once but only as much as needed. this will improve performance.
 
 when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin to get that data in my state.
 
 delete account from firebase when account deleted from database.
+
+add coupons for discount
