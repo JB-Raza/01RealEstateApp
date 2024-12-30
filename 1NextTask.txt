@@ -1,0 +1,31 @@
+CURRENT functionality --------------------------------------------
+
+update listing
+
+images are not being sent to backend
+i am not getting images field in my console even for add listing. the field is missing from listing object but the image is being displayed in the website.
+other updates are working
+
+To be applied functionalities ------------------------------------
+
+update listing
+listing image sliders
+search listing functionality
+filters with respect to price, discount, popular, cheapest, rent and sale.
+pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but only as much as needed. this will improve performance.
+delete account from firebase when account deleted from database.
+add coupons for discount
+chat support with client/landlord
+add payment methods
+add security, web-vitals
+
+
+code revisions mendatory X 2 times
+
+
+
+ ERRORS -----------------------------------------------------------
+
+need to learn more about promises and Promise.all()
+cannot delete all image previews
+when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin to get that data in my state.

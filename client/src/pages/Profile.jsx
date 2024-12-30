@@ -39,9 +39,6 @@ function Profile() {
     const data = await res.json()
     console.log("listing data == ", data)
   }
-  const handleUpdateListing = async (listingId) => {
-    // const res = await fetch("/api/listings")
-  }
 
   const handleImgChange = (e) => {
     const file = e.target.files[0]
@@ -188,18 +185,20 @@ function Profile() {
         {userListings.length > 0 ? <h1 className='text-center text-2xl font-bold my-4'>All Listings</h1> : ""}
         {userListings && userListings.map((listing, index) => (
           <div key={index} className='flex gap-3 w-full items-center justify-between my-2 border-4 py-1 px-2'>
-              <img src={listing.images[0]} alt="img"
-                className='w-16 rounded-md hover:scale-105 transition-all duration-75'
-              />
-            <Link to={`/listings/${listing._id}`} className=''>
+            <img src={listing.images[0]} alt="img"
+              className='w-16 rounded-md hover:scale-105 transition-all duration-75'
+            />
+            <Link to={`/listings/${listing._id}`}>
               <h2 className='font-semibold text-lg text-center hover:underline'>{listing.title}</h2>
             </Link>
 
-              {/* actions */}
-              <span className="actions flex flex-col">
-                <button className='text-green-600 font-semibold hover:text-green-800' onClick={() => handleUpdateListing(listing._id)}>Update</button>
-                <button className='text-red-600 font-semibold hover:text-red-800' onClick={() => handleDeleteListing(listing._id)} >Delete</button>
-              </span>
+            {/* actions */}
+            <span className="actions flex flex-col">
+              <Link to={`/listings/${listing._id}/update`}>
+                <button className='text-green-600 font-semibold hover:text-green-800'>Update</button>
+              </Link>
+              <button className='text-red-600 font-semibold hover:text-red-800' onClick={() => handleDeleteListing(listing._id)} >Delete</button>
+            </span>
           </div>
         ))}
       </div>

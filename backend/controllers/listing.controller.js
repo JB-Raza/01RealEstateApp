@@ -9,6 +9,7 @@ export const allListings = async (req, res, next) => {
 export const addListing = async (req, res, next) => {
     // check if user logged in
     const userId = req.user.id
+
     if (!req.user) return next(errorHandler(400, "you must be logged in to create a new listing"))
     try {
         const images = req.files.map((image) => {
@@ -61,7 +62,7 @@ export const deleteListing = async (req, res, next) => {
     const listingId = req.params.id
     try {
         if (!userId) return next(errorHandler(400, "you must be logged in to delete this listing"))
-        if(!listingId) return next(errorHandler(404, "listing not found"))
+        if (!listingId) return next(errorHandler(404, "listing not found"))
         const listing = await Listing.findById(listingId)
         const userRef = listing.userRef.toString()  //since it is of Type ObjectId and the params id is string.
 
@@ -72,3 +73,55 @@ export const deleteListing = async (req, res, next) => {
         next(error)
     }
 }
+
+// export const updateListing = async (req, res, next) => {
+//     const userId = req.user.id
+//     try {
+//         const images = req.files?.map((image) => image.path) || []
+//         if (!userId) return next(errorHandler(400, "you must be logged in to update this listing"))
+        
+//         const listingId = req.params.id
+//         const listing = await Listing.findById(listingId)
+//         if (!listing) return next(errorHandler(404, "Listing not found"));
+
+//         const userRef = listing.userRef.toString()
+//         if (userId !== userRef) return next(errorHandler(400, "you can only update your own listings"))
+        
+//         const updatedData = { ...req.body, ...(images.length > 0 && { images }) };
+
+//         const updatedListing = await Listing.findByIdAndUpdate(listingId, updatedData, {new: true})
+
+//         res.json({
+//             success: true,
+//             updatedListing
+//         })
+//     } catch (error) {
+//         next(error)
+//     }
+// }
+export const updateListing = async (req, res, next) => {
+    const userId = req.user?.id;
+    try {
+        // check user login status
+        if (!userId) return next(errorHandler(400, "You must be logged in to update this listing"));
+
+        const listingId = req.params.id;
+        const listing = await Listing.findById(listingId);
+        if (!listing) return next(errorHandler(404, "Listing not found"));
+
+        // Verifying user ownership of the listing
+        const userRef = listing.userRef.toString();
+        if (userId !== userRef) return next(errorHandler(403, "You can only update your own listings"));
+
+        const images = req.files?.map((image) => image.path) || [];
+        const updateData = { ...req.body, ...(images.length > 0 && { images }) };
+        const updatedListing = await Listing.findByIdAndUpdate(listingId, updateData, { new: true });
+
+        res.json({
+            success: true,
+            updatedListing,
+        });
+    } catch (error) {
+        next(errorHandler(500, error.message || "An error occurred while updating the listing"));
+    }
+};

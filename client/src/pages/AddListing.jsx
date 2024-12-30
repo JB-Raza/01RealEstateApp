@@ -1,31 +1,66 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useMatch } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function AddListing() {
 
+  // all states
+  const [isListingEditable, setIsListingEditable] = useState(false)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({})
   const [services, setServices] = useState([])
-  const [serviceInput, setServiceInput] = useState("")
   const [images, setImages] = useState([])
+  const [imgPreviews, setImgPreviews] = useState([])
+  const [serviceInput, setServiceInput] = useState("")
+
   const navigate = useNavigate()
   const user = useSelector((state) => state.user.currentUser)
+  const match = useMatch("/listings/:id/update") // checking if this is the current path or not
 
-  const [imgPreviews, setImgPreviews] = useState([])
+  // checking if route matches, fetching the listing and assigning the values to states
+  useEffect(() => {
+    if (match) {
+      setIsListingEditable(true)
+      const listingId = match.params.id
 
-  // images.map((image) => {
-  //   const file = image
-  //   const reader = new FileReader()
-  //   reader.onload = () =>{
-  //     setImgPreviews([ ...imgPreviews, reader.result ])
-  //   }
-  //   reader.readAsDataURL(file)
-  // })
+      const getListing = async () => {
+        try {
+          const res = await fetch(`/api/listings/${listingId}`)
+          const listing = await res.json()
 
+          const urlToFile = async (url, filename) => {
+            const res = await fetch(url)
+            const blob = await res.blob()
+            // creating file
+            return new File([blob], filename, { type: blob.type })
+          }
+
+          setImages([])
+          // const newImgs = []
+          const result = await Promise.allSettled(listing.images.map((imgUrl, index) => urlToFile(imgUrl, `${index}img.jpg`)))
+          const newImgs = result
+            .filter((result) => result.status === 'fulfilled' && result.value !== null)
+            .map((result) => result.value)
+          setImages(newImgs)
+
+          // setting values in state
+          setServices(listing.services)
+          const { images, services, ...rest } = listing
+          setFormData(rest)
+
+        } catch (error) {
+          console.log("ERROR: in setting values in formData : ", error)
+        }
+      }
+      getListing()
+
+    } else setIsListingEditable(false)
+  }, [match])
+
+  // generate image previews  
   useEffect(() => {
     const generatePreviews = async () => {
       const previews = await Promise.all(
@@ -38,8 +73,7 @@ function AddListing() {
         })
       );
       setImgPreviews(previews);
-    };
-
+    }
     if (images.length) {
       generatePreviews();
     }
@@ -52,15 +86,14 @@ function AddListing() {
     })
   }
   const handleAddService = () => {
-    setServices([
-      ...services,
-      serviceInput
-    ])
-    setServiceInput("")
-  }
+    if (serviceInput.length > 0) {
+      setServices([
+        ...services,
+        serviceInput
+      ])
+    }
 
-  const handleRemoveService = (index) => {
-    setServices(services.filter((service, i) => i !== index))
+    setServiceInput("")
   }
 
   const handleImgChange = (e) => {
@@ -72,43 +105,46 @@ function AddListing() {
     e.preventDefault();
     setLoading(true)
     try {
-      // Validate required fields
-      if (!formData.title || !formData.price || images.length === 0) {
-        return alert("Please fill out all required fields and upload images.");
-      }
-
       const form = new FormData();
       form.append("title", formData.title);
       form.append("description", formData.description);
-      form.append("type", formData.category);
-      form.append("service", formData.rentOrSale);
+      form.append("category", formData.category);
+      form.append("rentOrSale", formData.rentOrSale);
       form.append("address", formData.address);
       form.append("price", formData.price);
       form.append("discountedPrice", formData.discountedPrice);
       form.append("contact", formData.contact);
 
       // append services
-      services.forEach(service => {
-        form.append("services", service)
-      })
+      services.forEach(service => form.append("services", service) )
       // Append multiple images
-      images.forEach((image) => {
-        form.append("images", image);
-      });
+      images.forEach((image) => form.append("images", image) )
 
-      const res = await fetch("/api/listings/add", {
-        method: "POST",
-        body: form,
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        navigate("/")
-        alert("Listing added successfully!");
-      } else {
-        console.error("Error response:", data);
-        alert(data.message || "Failed to add listing.");
+      // update listing
+      if (isListingEditable) {
+        const res = await fetch(`/api/listings/${match.params.id}/update`, {
+          method: "PUT",
+          body: form
+        })
+        const data = await res.json()
+        if (data.success) {
+          navigate("/")
+          alert("listing updated")
+        }
+        else alert("could not update listing")
+      }
+      // create listing
+      else {
+        const res = await fetch("/api/listings/add", {
+          method: "POST",
+          body: form,
+        })
+        const data = await res.json();
+        if (data.success) {
+          navigate("/")
+          alert("listing added")
+        }
+        else alert("could not add listing")
       }
       setLoading(false)
     } catch (error) {
@@ -125,25 +161,26 @@ function AddListing() {
       <form
         onSubmit={handleFormSubmit}
         className='flex justify-center items-center flex-col md:flex-row md:items-start md: gap-3 px-4'>
+
         {/* col 1 rest of form */}
         <div className='first flex-1 '>
           {/* title */}
           <input type="text" placeholder='Title' name='title' id='title'
             className='input-box focus:scale-100 invalid:border-red-400'
-            maxLength={50} minLength={10} required
+            value={formData.title || ""} maxLength={50} minLength={10} required
             onChange={handleInputChange}
           />
           {/* description */}
           <textarea name="description" id="description" placeholder='Description'
             className='input-box focus:scale-100 invalid:border-red-400'
-            minLength={10} required
+            value={formData.description || ""} minLength={10} rows={4} required
             onChange={handleInputChange}
           ></textarea>
-          {/* category rent or sale */}
+          {/* category and rent or sale */}
           <div className='flex gap-2'>
             {/* category */}
             <select name="category" id="category" required className='input-box focus:scale-100 invalid:border-red-400'
-              onChange={handleInputChange}
+              value={formData.category || ""} onChange={handleInputChange}
             >
               <option value="select">select</option>
               <option value="Standard">Standard</option>
@@ -154,8 +191,7 @@ function AddListing() {
             </select>
             {/* rentOrSale */}
             <select name="rentOrSale" id="rentOrSale" required className='input-box focus:scale-100 invalid:border-red-400'
-              onChange={handleInputChange}
-            // defaultValue={"rent"}
+              value={formData.rentOrSale || ""} onChange={handleInputChange}
             >
               <option value="select">select</option>
               <option value="rent">Rent</option>
@@ -164,19 +200,20 @@ function AddListing() {
           </div>
           {/* address */}
           <input type="text" placeholder='Address' name='address' id='address' className='input-box focus:scale-100 invalid:border-red-400'
-            maxLength={75} minLength={10} required
+            value={formData.address || ""} maxLength={75} minLength={10} required
             onChange={handleInputChange}
           />
           {/* price and discount */}
           <div className='flex gap-2'>
             {/* price */}
-            <input type="number" placeholder='Price' name='price' id='price' className='input-box focus:scale-100 invalid:border-red-400'
-              required onChange={handleInputChange}
+            <input type="number" placeholder='Price' name='price' id='price'
+              className='input-box focus:scale-100 invalid:border-red-400'
+              value={formData.price || ""} required onChange={handleInputChange}
             />
             {/* discounted price */}
             <input type="number" placeholder='Discount' name='discountedPrice' id='discountedPrice'
               className='input-box focus:scale-100 invalid:border-red-400'
-              onChange={handleInputChange}
+              value={formData.discountedPrice || ""} onChange={handleInputChange}
             />
           </div>
         </div>
@@ -185,10 +222,9 @@ function AddListing() {
         <div className='second flex-1'>
           {/* contact */}
           <input type="number" placeholder='Contact No.' name='contact' id='contact' className='input-box focus:scale-100 invalid:border-red-400'
-            required
-            onChange={handleInputChange} />
+            required value={formData.contact || ""} onChange={handleInputChange} />
 
-          {/* Services */}
+          {/* add service */}
           <div className="services-input flex items-center">
             <input
               type="text"
@@ -211,7 +247,7 @@ function AddListing() {
             {services && services.map((service, index) => (
               <li key={index} className="flex items-center mx-1 p-2 font-bold rounded-md bg-slate-300">
                 <span className="mr-2">{service}</span>
-                
+
                 {/* del btn */}
                 <FontAwesomeIcon icon={faTrash} type='button'
                   className='text-red-500 cursor-pointer'
@@ -235,7 +271,9 @@ function AddListing() {
                   alt={`Preview ${index}`}
                   className="w-20 object-cover rounded-md border"
                 />
-                <FontAwesomeIcon onClick={() => setImages(images.filter((image, i) => i != index))} icon={faTrash} className='w-16 cursor-pointer text-red-600 hover:text-red-800' />
+                <FontAwesomeIcon
+                  onClick={() => setImages(images.filter((image, i) => i != index))}
+                  icon={faTrash} className='w-16 cursor-pointer text-red-600 hover:text-red-800' />
               </div>
             ))}
           </div>
@@ -244,7 +282,7 @@ function AddListing() {
           <button
             disabled={loading}
             className='disabled:opacity-75 text-white rounded-md py-3 text-lg font-semibold cursor-pointer w-full bg-slate-700 hover:bg-slate-800 outline-none'
-          >{loading ? "loading..." : "Create Listing"}</button>
+          >{loading ? "loading..." : <span>{isListingEditable ? "Update Listing" : "Create Listing"}</span>}</button>
         </div>
       </form>
     </div>
