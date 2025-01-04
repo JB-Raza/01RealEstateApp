@@ -71,9 +71,9 @@ function Home() {
                           {listing.availabilityStatus ? "Available" : "Not Available"}
                         </span>
                         {/* discount */}
-                        {listing.discountedPrice > 0 ?
+                        {listing.discount > 0 ?
                           <span className={`bg-red-800 rounded-md text-white text-center py-1 px-2`}>
-                            Rs. {listing.discountedPrice} OFF
+                            Rs. {listing.discount} OFF
                           </span> : ""}
                       </div>
                     </div>

@@ -10,6 +10,7 @@ function AddListing() {
   // all states
   const [isListingEditable, setIsListingEditable] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const [formData, setFormData] = useState({})
   const [services, setServices] = useState([])
   const [images, setImages] = useState([])
@@ -112,7 +113,7 @@ function AddListing() {
       form.append("rentOrSale", formData.rentOrSale);
       form.append("address", formData.address);
       form.append("price", formData.price);
-      form.append("discountedPrice", formData.discountedPrice);
+      form.append("discount", formData.discount);
       form.append("contact", formData.contact);
 
       // append services
@@ -120,6 +121,16 @@ function AddListing() {
       // Append multiple images
       images.forEach((image) => form.append("images", image) )
 
+      if(services.length === 0){
+        setError("Please add at least one service")
+        setLoading(false)
+        return
+      }
+      if(images.length === 0){
+        setError("Please add at least one image")
+        setLoading(false)
+        return
+      }
       // update listing
       if (isListingEditable) {
         const res = await fetch(`/api/listings/${match.params.id}/update`, {
@@ -141,10 +152,13 @@ function AddListing() {
         })
         const data = await res.json();
         if (data.success) {
+          setError(null)
           navigate("/")
-          alert("listing added")
+          alert(data.message)
         }
-        else alert("could not add listing")
+        else{
+          setError(data.message)
+        }
       }
       setLoading(false)
     } catch (error) {
@@ -156,8 +170,8 @@ function AddListing() {
 
   return !user ? <Navigate to="/signin" /> : (
     <div className='max-w-4xl m-auto'>
-      <h1 className='text-center my-6 text-xl md:text-3xl text-slate-700 font-bold'>Create a New Listing</h1>
-
+      <h1 className='text-center my-6 text-xl md:text-3xl text-slate-700 font-bold'>{isListingEditable? "Update Listing" : "Create a New Listing"}</h1>
+      <p className='text-red-500 text-center'>{error}</p>
       <form
         onSubmit={handleFormSubmit}
         className='flex justify-center items-center flex-col md:flex-row md:items-start md: gap-3 px-4'>
@@ -211,9 +225,9 @@ function AddListing() {
               value={formData.price || ""} required onChange={handleInputChange}
             />
             {/* discounted price */}
-            <input type="number" placeholder='Discount' name='discountedPrice' id='discountedPrice'
+            <input type="number" placeholder='Discount' name='discount' id='discount'
               className='input-box focus:scale-100 invalid:border-red-400'
-              value={formData.discountedPrice || ""} onChange={handleInputChange}
+              value={formData.discount || ""} onChange={handleInputChange}
             />
           </div>
         </div>
@@ -260,7 +274,7 @@ function AddListing() {
           <p className='text-xs mt-4 mb-0 text-gray-600'> <b>Images:</b> The first Image will be the Cover (max 4) </p>
           {/* select images */}
           <input type="file" name='images' id='images' className='input-box focus:scale-100  invalid:border-red-400'
-            accept="image/*" required multiple onChange={handleImgChange} />
+            accept="image/*" multiple onChange={handleImgChange} />
 
           {/* selected images previews */}
           <div className="flex flex-wrap gap-2 flex-col rounded-md mt-2 mb-4">

@@ -46,12 +46,12 @@ function Listing() {
 
           {/* title & price */}
           <h1 className='text-xl md:text-2xl text-slate-900 font-semibold my-5'>
-            {listing.title}  - Rs.<span> {listing.discountedPrice > 0 ? <span> <span className='line-through'>{listing.price}</span> {listing.price - listing.discountedPrice}</span> : listing.price} </span> {listing.rentOrSale == "rent" ? "/ night" : ""}</h1>
+            {listing.title}  - Rs.<span> {listing.discount > 0 ? <span> <span className='line-through'>{listing.price}</span> {listing.price - listing.discount}</span> : listing.price} </span> {listing.rentOrSale == "rent" ? "/ night" : ""}</h1>
 
           <p className='text-slate-700 flex gap-3 items-center'><FontAwesomeIcon className='text-green-400 text-sm' icon={faLocationDot} /> {listing.address}</p>
           <div className='my-2 flex gap-2'>
             <p className={`capitalize w-full max-w-[200px] bg-green-900 rounded-md p-1 text-white text-center`}>For {listing.rentOrSale}</p>
-            {listing.discountedPrice > 0 ? <p className={`capitalize w-full max-w-[200px] bg-red-900 rounded-md p-1 text-white text-center`}>Discount Rs. {listing.discountedPrice}</p> : ""}
+            {listing.discount > 0 ? <p className={`capitalize w-full max-w-[200px] bg-red-900 rounded-md p-1 text-white text-center`}>Discount Rs. {listing.discount}</p> : ""}
 
           </div>
           {/* description */}

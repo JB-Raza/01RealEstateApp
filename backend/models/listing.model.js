@@ -23,6 +23,7 @@ const listingSchema = new Schema({
         type: String,
         default: "rent",
         enum: ["rent", "sale"],
+        required: true,
     },
     services: {
         type: [String],
@@ -35,7 +36,7 @@ const listingSchema = new Schema({
         type: Number,
         required: true,
     },
-    discountedPrice: {
+    discount: {
         type: Number,
     },
     

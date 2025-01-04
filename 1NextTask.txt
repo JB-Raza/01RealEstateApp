@@ -1,13 +1,12 @@
 -----------------------------------CURRENT functionality --------------------------------------------
 
-Schema validation with JOI
+adding alerts (flash) and warnings for updating and deleting any user or listing or signout
 
 
 -----------------------------------To be applied functionalities ------------------------------------
 
-Schema validation with JOI
 
-adding alerts and warnings for updating and deleting any user or listing or signout
+adding alerts (flash) and warnings for updating and deleting any user or listing or signout
 
 filters with respect to price, discount, popular, cheapest, rent and sale.
 search listing functionality

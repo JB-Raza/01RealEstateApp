@@ -9,18 +9,17 @@ export const allListings = async (req, res, next) => {
 export const addListing = async (req, res, next) => {
     // check if user logged in
     const userId = req.user.id
-
+    
     if (!req.user) return next(errorHandler(400, "you must be logged in to create a new listing"))
     try {
-        const images = req.files.map((image) => {
+        const images = req.files?.map((image) => {
             return image.path
         })
         const data = req.body
-        if (data.discountedPrice == "undefined") data.discountedPrice = 0
+        if (data.discount == "undefined") data.discount = 0
 
         const newListing = new Listing({ ...data, userRef: userId, images })
         await newListing.save()
-
         res.status(201).json({
             success: true,
             message: "Listing created successfully sire",
@@ -28,6 +27,7 @@ export const addListing = async (req, res, next) => {
         })
 
     } catch (error) {
+        // console.log("Bad errror sire == ", error.message)
         next(errorHandler(500, error.message))
     }
 }
@@ -74,31 +74,6 @@ export const deleteListing = async (req, res, next) => {
     }
 }
 
-// export const updateListing = async (req, res, next) => {
-//     const userId = req.user.id
-//     try {
-//         const images = req.files?.map((image) => image.path) || []
-//         if (!userId) return next(errorHandler(400, "you must be logged in to update this listing"))
-        
-//         const listingId = req.params.id
-//         const listing = await Listing.findById(listingId)
-//         if (!listing) return next(errorHandler(404, "Listing not found"));
-
-//         const userRef = listing.userRef.toString()
-//         if (userId !== userRef) return next(errorHandler(400, "you can only update your own listings"))
-        
-//         const updatedData = { ...req.body, ...(images.length > 0 && { images }) };
-
-//         const updatedListing = await Listing.findByIdAndUpdate(listingId, updatedData, {new: true})
-
-//         res.json({
-//             success: true,
-//             updatedListing
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// }
 export const updateListing = async (req, res, next) => {
     const userId = req.user?.id;
     try {
