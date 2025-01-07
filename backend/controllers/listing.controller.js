@@ -68,7 +68,11 @@ export const deleteListing = async (req, res, next) => {
 
         if (userId !== userRef) return next(errorHandler(400, "You can only delete your own listing sire"))
         const deletedListing = await Listing.deleteOne(listing)
-        res.json(deletedListing)
+        res.json({    
+            success: true,
+            message: "Listing Deleted",
+            deletedListing
+        })
     } catch (error) {
         next(error)
     }
@@ -94,6 +98,7 @@ export const updateListing = async (req, res, next) => {
 
         res.json({
             success: true,
+            message: "Listing updated successfully",
             updatedListing,
         });
     } catch (error) {

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 // swiper slider
-import Slider from './Slider.jsx'
+import Slider from '../components/Slider.jsx'
 
+// components
+import {Loader} from '../components/index.js'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +27,10 @@ function Listing() {
     fetchListing();
   }, [])
 
+  // adding loaders while page is not ready to render
+  if(!listing.images){
+    return <Loader />
+  }
   return (
     <div>
       {/* slider */}

@@ -1,17 +1,19 @@
 -----------------------------------CURRENT functionality --------------------------------------------
 
-adding alerts (flash) and warnings for updating and deleting any user or listing or signout
-
-
 -----------------------------------To be applied functionalities ------------------------------------
 
-
-adding alerts (flash) and warnings for updating and deleting any user or listing or signout
-
+dark mode and light mode
 filters with respect to price, discount, popular, cheapest, rent and sale.
+add to wishlist. 
+
 search listing functionality
-adding loaders when fetching data takes time
+
 pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but only as much as needed. this will improve performance.
+
+users can add reviews if and only if they have purchased the listing.(after payment, that listing id will be stored in there user schema where all those listings user has bought will be refrenced in an array.) as:
+purchaseList: {
+    type: [array of objectIds of listings user has purchase]
+}
 
 delete account from firebase when account deleted from database.
 add coupons for discount
@@ -23,10 +25,13 @@ recover account by email
 
 code revisions mendatory X 2 times
 
+PWAs
 
 
 -----------------------------------ERRORS -----------------------------------------------------------
 
-need to learn more about promises and Promise.all()
-cannot delete all image previews. also the images are not auto selected when fetched for update listing
+cannot delete user through profile page button.
+validation error: services must be an array when sending single service.
+need to learn more about promises and Promise.all().
+cannot delete all image previews.
 when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin to get that data in my state.

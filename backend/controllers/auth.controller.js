@@ -36,7 +36,7 @@ export const signin = async (req, res, next) => {
         next(error)
     }
 }
-
+// login with google
 export const google = async (req, res, next) => {
     try {
         const { name, email, photo } = req.body
@@ -79,5 +79,5 @@ export const google = async (req, res, next) => {
 
 // sign out
 export const signout = async (req, res, next) => {
-    res.clearCookie("access_token").status(200).json({ message: "user signed out successfully" })
+    res.clearCookie("access_token").status(200).json({success: true, message: "user signed out successfully" })
 }

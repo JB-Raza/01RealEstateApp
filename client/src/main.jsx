@@ -1,6 +1,12 @@
 import { createRoot } from 'react-dom/client'
+
+import { Loader, PrivateRoute } from './components/index.js'
+
+// router imports
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom'
-import { Home, About, SignIn, SignUp, Profile, AddListing, Listing } from './pages/index.js'
+
+// pages
+import {Home, About, Profile, SignIn, SignUp, AddListing, Listing} from './pages/index.js'
 
 import { Provider } from 'react-redux'
 import { persistor, store } from './redux/store.js'
@@ -8,8 +14,8 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import App from './App.jsx'
 import './index.css'
-import PrivateRoute from './components/PrivateRoute.jsx'
 
+// all routes
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />} >
@@ -25,19 +31,17 @@ const router = createBrowserRouter(
       <Route element={<PrivateRoute />} >
         <Route path='profile' element={<Profile />} />
       </Route>
-
     </Route>
   )
 )
 
 createRoot(document.getElementById('root')).render(
+  // redux state provider
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor} >
-      <RouterProvider router={router} >
-
-        <App />
-
-      </RouterProvider>,
+    {/* persisting the state */}
+    <PersistGate loading={ <Loader/> /*you can pass null*/} persistor={persistor} >
+      {/* for routing */}
+      <RouterProvider router={router} /> {/* this automatically renders App.jsx (but import of App.jsx is required)*/}
     </PersistGate>
   </Provider>
 )

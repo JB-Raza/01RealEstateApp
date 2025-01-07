@@ -2,8 +2,14 @@ import { useState, useRef } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import OAuth from '../components/OAuth'
 
-function SignUp() {
 
+// state
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../redux/notificationSlice.js'
+import Alert from '../components/Alert.jsx'
+
+function SignUp() {
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -53,6 +59,7 @@ function SignUp() {
       setLoading(false)
       setError(null)
       navigate("/signin")
+      dispatch(setNotification({type: "success", message: "Sign up successfully"}))
 
     } catch (error) {
       setLoading(false)
@@ -64,7 +71,7 @@ function SignUp() {
 
   return (
     <div className='max-w-[1000px] mx-auto px-4 py-8'>
-
+      <Alert />
       <h1 className='text-center my-6 font-semibold text-3xl'>Sign Up</h1>
 
       <form

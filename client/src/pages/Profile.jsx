@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+
+// redux states
 import { useSelector, useDispatch } from 'react-redux'
 import { updateStart, updateSuccess, updateFailure, clearState } from '../redux/user/userSlice.js'
+import { setNotification } from '../redux/notificationSlice.js'
+
+// components
+import {Alert, Loader} from '../components/index.js'
 
 
 function Profile() {
@@ -37,7 +43,12 @@ function Profile() {
   const handleDeleteListing = async (listingId) => {
     const res = await fetch(`api/listings/delete/${listingId}`, { method: "DELETE" })
     const data = await res.json()
-    console.log("listing data == ", data)
+    if (data.success) {
+      dispatch(setNotification({ type: "success", message: data.message || "Listing deleted successfully" }))
+      return
+    }
+    dispatch(setNotification({ type: "failure", message: data.message || "could not delete Listing" }))
+
   }
 
   const handleImgChange = (e) => {
@@ -70,12 +81,16 @@ function Profile() {
       const data = await res.json()
 
       if (res.ok && data.success) {
+        dispatch(setNotification({ type: "success", message: data.message }))
         dispatch(updateSuccess(data.updatedUser))
         navigate('/')
       }
-      else dispatch(updateFailure(data.message))
+      else {
+        dispatch(setNotification({ type: "failure", message: data.message || "could not update user" }))
+        dispatch(updateFailure(data.message))
+      }
     } catch (error) {
-      console.log("ERROR in API == ", error)
+      dispatch(setNotification({ type: "failure", message: error.message || "could not update user" }))
       dispatch(updateFailure(error.message))
     }
 
@@ -86,15 +101,15 @@ function Profile() {
       const res = await fetch(`/api/user/delete/${currUser._id}`, {
         method: 'DELETE',
       })
+      // console.log("res == ", res)
       const data = await res.json()
-      console.log("data == ", data)
       if (res.ok && data.message) {
-        console.log("user deleted successfully")
+        dispatch(setNotification({ type: "success", message: data.message || "user deleted successfully" }))
         dispatch(clearState())
         navigate('/signup')
       }
     } catch (error) {
-      console.log("error in deleting == ", error.message)
+      dispatch(setNotification({ type: "failure", message: error.message || "Error deleting user" }))
     }
   }
   const handleSignoutUser = async () => {
@@ -104,17 +119,22 @@ function Profile() {
       })
       const data = await res.json()
       if (res.ok && data.message) {
-        // console.log("user signed out successfully")
         dispatch(clearState())
+        dispatch(setNotification({ type: "success", message: data.message }))
         navigate('/signin')
       }
     } catch (error) {
-      console.log("error in signing out == ", error.message)
+      dispatch(setNotification({ type: "failure", message: error.message || "error in sign out" }))
     }
   }
 
+  // adding loaders
+  if(!currUser){
+    return <Loader />
+  }
   return (
     <div className='max-w-lg mx-auto px-4'>
+      <Alert />
       <h1 className='text-center my-5 text-3xl font-bold'>Profile</h1>
 
       <form onSubmit={handleUpdateSubmit}>
@@ -130,10 +150,8 @@ function Profile() {
           onClick={() => fileRef.current.click()}
           className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-24 sm:w-36 h-24 sm:h-36 object-cover hover:shadow-xl hover:scale-105'
         />
-        {/* error handing */}
-        {/* <div className="error"> */}
+        {/* error handling */}
         {error && <p className='text-red-500 text-center'>{error}</p>}
-        {/* </div> */}
 
         {/* username */}
         <input type="text" placeholder='Username' name='username' id='username'

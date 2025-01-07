@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
-import {useSelector, useDispatch} from "react-redux"
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
 import OAuth from '../components/OAuth'
+// user state and notification state
+import { useSelector, useDispatch } from "react-redux"
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
+import { setNotification } from '../redux/notificationSlice.js'
+import Alert from '../components/Alert.jsx'
 
 
 function SignIn() {
@@ -34,10 +37,12 @@ function SignIn() {
         dispatch(signInFailure(data.message))
         return
       }
+      dispatch(setNotification({type: "success", message: "Login successfully"}))
       dispatch(signInSuccess(data))
       navigate("/")
 
     } catch (error) {
+      dispatch(setNotification({type: "success", message: "Login successfully"}))
       dispatch(signInFailure(error.message))
     }
 
@@ -46,7 +51,7 @@ function SignIn() {
 
   return (
     <div className='max-w-lg px-6 mx-auto'>
-
+      <Alert />
       <h1 className='text-center my-6 font-semibold text-3xl'>Login</h1>
 
       <form

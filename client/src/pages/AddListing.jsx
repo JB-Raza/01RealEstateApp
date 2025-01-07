@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { Navigate, useNavigate, useMatch } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+// states
+import { useSelector, useDispatch } from 'react-redux'
+import {setNotification} from '../redux/notificationSlice.js'
+
+// components
+import {Alert, Loader} from '../components/index.js';
+
+
 function AddListing() {
 
   // all states
   const [isListingEditable, setIsListingEditable] = useState(false)
+  const [editableListing, setEditableListing] = useState({})
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
   const [formData, setFormData] = useState({})
   const [services, setServices] = useState([])
   const [images, setImages] = useState([])
@@ -18,6 +25,7 @@ function AddListing() {
   const [serviceInput, setServiceInput] = useState("")
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const user = useSelector((state) => state.user.currentUser)
   const match = useMatch("/listings/:id/update") // checking if this is the current path or not
 
@@ -31,6 +39,7 @@ function AddListing() {
         try {
           const res = await fetch(`/api/listings/${listingId}`)
           const listing = await res.json()
+          setEditableListing(listing)
 
           const urlToFile = async (url, filename) => {
             const res = await fetch(url)
@@ -122,12 +131,12 @@ function AddListing() {
       images.forEach((image) => form.append("images", image) )
 
       if(services.length === 0){
-        setError("Please add at least one service")
+        dispatch(setNotification({type: "failure", message: "Please add at least one service"}))
         setLoading(false)
         return
       }
       if(images.length === 0){
-        setError("Please add at least one image")
+        dispatch(setNotification({type: "failure", message: "Please add at least one image"}))
         setLoading(false)
         return
       }
@@ -140,9 +149,13 @@ function AddListing() {
         const data = await res.json()
         if (data.success) {
           navigate("/")
-          alert("listing updated")
+          dispatch(setNotification({type: "success", message: data.message}))
+          setLoading(false)
+          return
         }
-        else alert("could not update listing")
+        dispatch(setNotification({type: "failure", message: `ERROR in updating: ${data.message}`}))
+        setLoading(false)
+        return
       }
       // create listing
       else {
@@ -152,26 +165,27 @@ function AddListing() {
         })
         const data = await res.json();
         if (data.success) {
-          setError(null)
           navigate("/")
-          alert(data.message)
+          dispatch(setNotification({type: "success", message: "Listing created successfully"}))
         }
         else{
-          setError(data.message)
+          dispatch(setNotification({type: "failure", message: `ERROR: ${data.message}`}))
         }
       }
       setLoading(false)
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to submit the form. Please try again.");
+      dispatch(setNotification({type: "failure", message: `ERROR: ${error.message}`}))
       setLoading(false)
     }
   };
 
+  if(!editableListing.images){
+    return <Loader />
+  }
   return !user ? <Navigate to="/signin" /> : (
     <div className='max-w-4xl m-auto'>
+      <Alert />
       <h1 className='text-center my-6 text-xl md:text-3xl text-slate-700 font-bold'>{isListingEditable? "Update Listing" : "Create a New Listing"}</h1>
-      <p className='text-red-500 text-center'>{error}</p>
       <form
         onSubmit={handleFormSubmit}
         className='flex justify-center items-center flex-col md:flex-row md:items-start md: gap-3 px-4'>

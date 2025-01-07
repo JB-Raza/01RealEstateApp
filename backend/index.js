@@ -3,7 +3,13 @@ const app = express()
 import mongoose from "mongoose"
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
-
+// models
+import User from './models/user.model.js'
+import Listing from './models/listing.model.js'
+// routes 
+import userRouter from './routes/user.route.js'
+import authRouter from './routes/auth.route.js'
+import listingRouter from './routes/listing.route.js'
 
 const mongoConnection = async () => {
     try {
@@ -12,29 +18,20 @@ const mongoConnection = async () => {
     }  catch (error) {
         console.log("ERROR in Mongo connection == ", error);
         if (error.cause) {
-            console.log("Cause details: ", error.cause);
+            console.log("Cause details Sire: ", error.cause);
         }
     }
 }
-mongoConnection()
+await mongoConnection()
 dotenv.config()
 
 
-app.listen(3000, () => {
-    console.log("server active on 3000")
-})
+app.listen(3000, () => console.log("server active on 3000"))
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser())
 
-// models
-import User from './models/user.model.js'
-import Listing from './models/listing.model.js'
-// routes 
-import userRouter from './routes/user.route.js'
-import authRouter from './routes/auth.route.js'
-import listingRouter from './routes/listing.route.js'
 
 // api requests
 app.use("/api/user", userRouter)
