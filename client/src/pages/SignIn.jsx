@@ -52,7 +52,7 @@ function SignIn() {
   return (
     <div className='max-w-lg px-6 mx-auto'>
       <Alert />
-      <h1 className='text-center my-6 font-semibold text-3xl'>Login</h1>
+      <h1 className='main-heading text-center'>Login</h1>
 
       <form
         action="api/auth/signup" method='post'
@@ -70,14 +70,15 @@ function SignIn() {
         />
         <button type='submit'
           disabled={loading}
-          className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+          className='main-button'
+          
         >{loading ? "loading..." : "login"}</button>
         <OAuth />
 
       </form>
       <div className='flex gap-2 my-2'>
-        <p>Dont have an account?</p>
-        <Link to="/signup" className='text-blue-800 font-semibold'>
+        <p className='text-slate-800 dark:text-slate-300'>Dont have an account?</p>
+        <Link to="/signup" className='text-indigo-700 hover:text-blue-700 font-semibold'>
           <span>Sign-up</span>
         </Link>
       </div>

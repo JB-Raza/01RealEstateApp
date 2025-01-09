@@ -1,20 +1,25 @@
 -----------------------------------CURRENT functionality --------------------------------------------
 
+
+// separate the card from allLIstings. i.e make a common component for all the cards.
+// setup createListing form responsiveness
+
+
+
 -----------------------------------To be applied functionalities ------------------------------------
 
-dark mode and light mode
 filters with respect to price, discount, popular, cheapest, rent and sale.
-add to wishlist. 
+add to wishlist functionality. 
 
 search listing functionality
 
-pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but only as much as needed. this will improve performance.
+pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but - only as much as needed. this will improve performance.
 
-users can add reviews if and only if they have purchased the listing.(after payment, that listing id will be stored in there user schema where all those listings user has bought will be refrenced in an array.) as:
-purchaseList: {
-    type: [array of objectIds of listings user has purchase]
-}
-
+users can add reviews if and only if they have purchased the listing.(after payment, that listing id will be stored in - there user schema where all those listings user has bought will be refrenced in an array.) as:
+- purchaseList: {
+-    type: [array of objectIds of listings user has purchase]
+- }
+delete images of listings as they are deleted from database.
 delete account from firebase when account deleted from database.
 add coupons for discount
 chat support with client/landlord
@@ -30,8 +35,63 @@ PWAs
 
 -----------------------------------ERRORS -----------------------------------------------------------
 
+fixing responsiveness of image sliders for listing
 cannot delete user through profile page button.
 validation error: services must be an array when sending single service.
 need to learn more about promises and Promise.all().
 cannot delete all image previews.
-when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin to get that data in my state.
+when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin - to get that data in my state.
+
+LOOK:
+look for weak points in my site. for example to update user information, if the user hasn't updated any information and - try to submit the form, the request is sent to server for update even if the user hasn't added any extra information. - This might effect site's performance as hackers can send many fake requests.
+
+
+
+
+
+-------------------DARK MODE----------------
+
+
+Element 	Background Color	Text Color  	Border/Shadow Color	    Hover/Active Color
+Body	    bg-slate-900    	text-gray-200	border-slate-800	    bg-slate-800
+Header	    bg-slate-800	    text-white	    border-slate-700    	bg-slate-700
+Heading	    N/A	                text-gray-100	N/A	                    N/A
+Links	    N/A	                text-indigo-400	border-slate-700        text-indigo-300
+Cards	    bg-slate-800	    text-gray-200	border-slate-700	    bg-slate-700
+Buttons	    bg-indigo-600	    text-white	    shadow-indigo-900	    bg-indigo-500
+
+
+ Dark Theme Styling Tips:
+Use text-white or text-gray-200 for text on dark backgrounds.
+Add subtle shadows with shadow-slate-900 for a more elevated look.
+For links, use text-indigo-400 to make them stand out, with a hover effect in text-indigo-300.
+
+
+-------------------LIGHT MODE----------------
+
+
+
+Element	    Background Color	Text Color	        Border/Shadow Color	    Hover/Active Color
+Body	    bg-gray-100     	text-gray-800	    border-gray-300     	bg-gray-200-----------------------------------
+Header	    bg-white	        text-gray-900   	border-gray-300	        bg-gray-100-----------------------------------
+Heading	    N/A	                text-gray-900	    N/A                 	N/A-----------------------------------
+Links	    N/A	                text-indigo-600    	N/A                 	text-indigo-500-----------------------------------
+Cards	    bg-white	        text-gray-800	    border-gray-300	        bg-gray-100-----------------------------------
+Buttons	    bg-indigo-500	    text-white	        shadow-indigo-300	    bg-indigo-400
+
+Light Theme Styling Tips:
+Use bg-white for cards and headers to give a clean and minimal look.
+For text, stick with text-gray-800 or text-gray-900 for high readability.
+Use text-indigo-600 for links to maintain consistency with buttons.
+
+
+-------------------EXTRA STYLING TIPS----------------
+
+🎯 Suggested Tailwind Classes for Key Elements
+Element	Dark Theme Classes	Light Theme Classes
+Body	bg-slate-900 text-gray-200	bg-gray-100 text-gray-800
+Header	bg-slate-800 text-white border-b border-slate-700	bg-white text-gray-900 border-b border-gray-300
+Heading	text-gray-100	text-gray-900
+Links	text-indigo-400 hover:text-indigo-300	text-indigo-600 hover:text-indigo-500
+Cards	bg-slate-800 text-gray-200 border border-slate-700	bg-white text-gray-800 border border-gray-300
+Buttons	bg-indigo-600 text-white hover:bg-indigo-500	bg-indigo-500 text-white hover:bg-indigo-400

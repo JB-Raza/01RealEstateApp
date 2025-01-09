@@ -6,10 +6,10 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // states
 import { useSelector, useDispatch } from 'react-redux'
-import {setNotification} from '../redux/notificationSlice.js'
+import { setNotification } from '../redux/notificationSlice.js'
 
 // components
-import {Alert, Loader} from '../components/index.js';
+import { Alert, Loader } from '../components/index.js';
 
 
 function AddListing() {
@@ -126,17 +126,17 @@ function AddListing() {
       form.append("contact", formData.contact);
 
       // append services
-      services.forEach(service => form.append("services", service) )
+      services.forEach(service => form.append("services", service))
       // Append multiple images
-      images.forEach((image) => form.append("images", image) )
+      images.forEach((image) => form.append("images", image))
 
-      if(services.length === 0){
-        dispatch(setNotification({type: "failure", message: "Please add at least one service"}))
+      if (services.length === 0) {
+        dispatch(setNotification({ type: "failure", message: "Please add at least one service" }))
         setLoading(false)
         return
       }
-      if(images.length === 0){
-        dispatch(setNotification({type: "failure", message: "Please add at least one image"}))
+      if (images.length === 0) {
+        dispatch(setNotification({ type: "failure", message: "Please add at least one image" }))
         setLoading(false)
         return
       }
@@ -149,11 +149,11 @@ function AddListing() {
         const data = await res.json()
         if (data.success) {
           navigate("/")
-          dispatch(setNotification({type: "success", message: data.message}))
+          dispatch(setNotification({ type: "success", message: data.message }))
           setLoading(false)
           return
         }
-        dispatch(setNotification({type: "failure", message: `ERROR in updating: ${data.message}`}))
+        dispatch(setNotification({ type: "failure", message: `ERROR in updating: ${data.message}` }))
         setLoading(false)
         return
       }
@@ -166,32 +166,32 @@ function AddListing() {
         const data = await res.json();
         if (data.success) {
           navigate("/")
-          dispatch(setNotification({type: "success", message: "Listing created successfully"}))
+          dispatch(setNotification({ type: "success", message: "Listing created successfully" }))
         }
-        else{
-          dispatch(setNotification({type: "failure", message: `ERROR: ${data.message}`}))
+        else {
+          dispatch(setNotification({ type: "failure", message: `ERROR: ${data.message}` }))
         }
       }
       setLoading(false)
     } catch (error) {
-      dispatch(setNotification({type: "failure", message: `ERROR: ${error.message}`}))
+      dispatch(setNotification({ type: "failure", message: `ERROR: ${error.message}` }))
       setLoading(false)
     }
   };
 
-  if(!editableListing.images){
+  if (isListingEditable && !editableListing.images) {
     return <Loader />
   }
   return !user ? <Navigate to="/signin" /> : (
     <div className='max-w-4xl m-auto'>
       <Alert />
-      <h1 className='text-center my-6 text-xl md:text-3xl text-slate-700 font-bold'>{isListingEditable? "Update Listing" : "Create a New Listing"}</h1>
+      <h1 className='main-heading text-center'>{isListingEditable ? "Update Listing" : "Create a New Listing"}</h1> {/*text-center my-6 text-xl md:text-3xl text-slate-700 font-bold */}
       <form
         onSubmit={handleFormSubmit}
         className='flex justify-center items-center flex-col md:flex-row md:items-start md: gap-3 px-4'>
 
         {/* col 1 rest of form */}
-        <div className='first flex-1 '>
+        <div className='first flex-1'>
           {/* title */}
           <input type="text" placeholder='Title' name='title' id='title'
             className='input-box focus:scale-100 invalid:border-red-400'
@@ -210,7 +210,7 @@ function AddListing() {
             <select name="category" id="category" required className='input-box focus:scale-100 invalid:border-red-400'
               value={formData.category || ""} onChange={handleInputChange}
             >
-              <option value="select">select</option>
+              {/* <option value="select">select</option> */}
               <option value="Standard">Standard</option>
               <option value="Villa">Villa</option>
               <option value="Mansion">Mansion</option>
@@ -221,7 +221,7 @@ function AddListing() {
             <select name="rentOrSale" id="rentOrSale" required className='input-box focus:scale-100 invalid:border-red-400'
               value={formData.rentOrSale || ""} onChange={handleInputChange}
             >
-              <option value="select">select</option>
+              {/* <option value="select">select</option> */}
               <option value="rent">Rent</option>
               <option value="sale">Sale</option>
             </select>
@@ -264,7 +264,7 @@ function AddListing() {
             <button
               type="button"
               onClick={handleAddService}
-              className="mx-0 bg-slate-600 hover:bg-slate-700 outline-none text-white px-3 py-3 rounded-r-md"
+              className="main-button !rounded-l-none active:scale-100 !w-20 "
             >
               Add
             </button>
@@ -309,7 +309,7 @@ function AddListing() {
           {/* submit button */}
           <button
             disabled={loading}
-            className='disabled:opacity-75 text-white rounded-md py-3 text-lg font-semibold cursor-pointer w-full bg-slate-700 hover:bg-slate-800 outline-none'
+            className='main-button'
           >{loading ? "loading..." : <span>{isListingEditable ? "Update Listing" : "Create Listing"}</span>}</button>
         </div>
       </form>

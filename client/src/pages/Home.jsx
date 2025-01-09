@@ -17,10 +17,10 @@ function Home() {
 
   const [listings, setListings] = useState([])
   const dispatch = useDispatch()
+  // welcome notification
   let welcomeNotification = localStorage.getItem("welcomeNotification")
-
   useEffect(() => {
-    if (welcomeNotification == false) {
+    if (!welcomeNotification) {
       dispatch(setNotification({ type: "Welcome", message: "Welcome to RealEstate" }))
       localStorage.setItem("welcomeNotification", "true")
     }
@@ -49,10 +49,10 @@ function Home() {
       <Alert />
       {/* home */}
       <div className='home w-full mx-4 md:h-[70vh] flex flex-col gap-5 md:px-10 justify-center min-h-[60vh]'>
-        <h1 className='text-2xl sm:text-4xl md:text-5xl font-bold text-slate-600'>Find your next <span className='text-slate-800'>Perfect</span> <br /> place with ease</h1>
-        <p className='text-slate-500 text-xs sm:text-sm'>Real<b>Estate</b> will help you find your home fast, easy and comfortable. <br />
+        <h1 className='text-2xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-slate-500'>Find your next <span className='text-slate-800 dark:text-slate-200'>Perfect</span> <br /> place with ease</h1>
+        <p className='text-slate-500 dark:text-slate-400 text-xs sm:text-sm'>Real<b>Estate</b> will help you find your home fast, easy and comfortable. <br />
           Our expert support are always available.</p>
-        <span className='text-blue-900 font-bold cursor-pointer'>Lets start now...</span>
+        <span className='text-indigo-500 hover:text-indigo-700 font-bold cursor-pointer'>Lets start now...</span>
       </div>
 
       {/* banner slider incomplete */}
@@ -62,36 +62,37 @@ function Home() {
         />
       </div>
 
-        <div className="container px-10 my-10 max-w-[1250px] mx-auto">
+      <div className="container px-10 my-10 max-w-[1250px] mx-auto">
 
-          <h1 className='my-6 mx-3 text-3xl font-semibold text-slate-600'>Popular Places</h1>
-          <div className="flex flex-col sm:flex-row flex-wrap">
-          {listings.length === 0? (
+{/*classes of popular places:  my-6 mx-3 text-3xl font-bold text-slate-800 dark:text-slate-300 */}
+        <h1 className='main-heading'>Popular Places</h1>
+        <div className="flex flex-col sm:flex-row flex-wrap">
+          {listings.length === 0 ? (
             <Loader />
           ) : (
             // {/* all listings */}
             listings.map((listing) => (
               <div key={listing._id} className='px-2 my-3 w-full sm:w-1/2 md:w-1/3 '>
-                {/* listing */}
+                {/* listing card */}
                 <Link to={`/listings/${listing._id}`}>
-                  <div className="rounded-md shadow-lg bg-white hover:shadow-gray-400 h-full max-w-[380px] mx-auto cursor-pointer overflow-hidden">
+                  <div className="rounded-md shadow-lg bg-white hover:shadow-gray-400 h-full max-w-[380px] mx-auto cursor-pointer overflow-hidden dark:bg-slate-800 dark:hover:shadow-slate-700 dark:shadow-md">
                     <img className="w-full h-52 rounded-t-md hover:scale-105 transition-all duration-200" src={listing.images[0]} />
                     <div className="px-4 py-3 flex flex-col gap-2">
                       {/* title */}
-                      <h3 className="font-semibold text-slate-800 text-md">{truncateText(listing.title, 30)}</h3>
+                      <h3 className="font-semibold text-slate-900 dark:text-slate-200 text-md">{truncateText(listing.title, 30)}</h3>
                       {/* address */}
-                      <p className=' text-xs text-slate-700 flex gap-1 font-semibold items-center'>
+                      <p className=' text-xs text-slate-800 dark:text-slate-300 flex gap-1 font-semibold items-center'>
                         <FontAwesomeIcon className='text-green-600 text-sm' icon={faLocationDot} /> {truncateText(listing.address, 35)}</p>
                       {/* description */}
-                      <p className='text-xs'>{truncateText(listing.description, 110)}</p>
+                      <p className='text-xs text-slate-600 dark:text-slate-400'>{truncateText(listing.description, 110)}</p>
 
                       <div className='flex flex-col justify-between gap-2'>
                         {/* price */}
-                        <p className="text-gray-700 text-base">Rs.{listing.price} {listing.rentOrSale == "rent" ? " / night" : ""} </p>
+                        <p className="text-gray-900 dark:text-slate-200 font-semibold text-base">Rs.{listing.price} {listing.rentOrSale == "rent" ? " / night" : ""} </p>
                         {/* rentOrSale and availability */}
                         <div className='flex justify-between items-center my-2'>
                           {/* rentOrSale */}
-                          <span className={`${listing.availabilityStatus ? "bg-green-800" : "bg-red-800"} rounded-md text-white text-center py-1 px-2`}>
+                          <span className={`${listing.availabilityStatus ? "bg-green-700" : "bg-red-700"} rounded-md text-white text-center py-1 px-2`}>
                             {listing.availabilityStatus ? "Available" : "Not Available"}
                           </span>
                           {/* discount */}
@@ -107,8 +108,8 @@ function Home() {
               </div>
             ))
           )}
-          </div>
         </div>
+      </div>
     </div>
   )
 }

@@ -135,7 +135,8 @@ function Profile() {
   return (
     <div className='max-w-lg mx-auto px-4'>
       <Alert />
-      <h1 className='text-center my-5 text-3xl font-bold'>Profile</h1>
+      
+      <h1 className='main-heading text-center'>Profile</h1>
 
       <form onSubmit={handleUpdateSubmit}>
 
@@ -145,11 +146,11 @@ function Profile() {
           ref={fileRef} accept='image/*'
           onChange={handleImgChange}
         />
-
         <img src={imagePreview}
           onClick={() => fileRef.current.click()}
-          className='mx-auto rounded-full my-4 shadow-lg cursor-pointer w-24 sm:w-36 h-24 sm:h-36 object-cover hover:shadow-xl hover:scale-105'
+          className='mx-auto rounded-full my-4 shadow-md hover:shadow-slate-500 cursor-pointer w-24 sm:w-36 h-24 sm:h-36 object-cover hover:scale-105'
         />
+
         {/* error handling */}
         {error && <p className='text-red-500 text-center'>{error}</p>}
 
@@ -182,40 +183,40 @@ function Profile() {
 
         <button type='submit'
           disabled={loading}
-          className='uppercase my-2 py-3 outline-none font-semibold text-sm sm:text-base bg-slate-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+          className='main-button'
         >{loading ? "loading..." : "Update"}</button>
 
         <Link to='/listings/new'>
           <button type='button'
-            className='uppercase py-3 outline-none border-0 font-semibold text-sm sm:text-base bg-green-800 text-white rounded-md w-full active:scale-95 hover:opacity-90 disabled:opacity-70'
+            className='main-button !bg-green-800'
           >Create Listing</button>
         </Link>
       </form>
 
       {/* delete and signout user */}
       <div className='flex justify-between my-2'>
-        <button onClick={handleDeleteUser} className='text-red-700 font-semibold cursor-pointer'>Delete Account</button>
-        <button onClick={handleSignoutUser} className='text-blue-700 font-semibold cursor-pointer'>Sign out</button>
+        <button onClick={handleDeleteUser} className='text-red-700 dark:text-red-500 font-semibold cursor-pointer'>Delete Account</button>
+        <button onClick={handleSignoutUser} className='text-indigo-700 dark:text-indigo-500 font-semibold cursor-pointer'>Sign out</button>
       </div>
 
       {/* all user listings */}
       <div className='my-10'>
-        {userListings.length > 0 ? <h1 className='text-center text-2xl font-bold my-4'>All Listings</h1> : ""}
+        {userListings.length > 0 ? <h1 className='main-heading text-center'>All Listings</h1> : ""}
         {userListings && userListings.map((listing, index) => (
-          <div key={index} className='flex gap-3 w-full items-center justify-between my-2 border-4 py-1 px-2'>
+          <div key={index} className='flex gap-3 w-full items-center justify-between my-2 bg-slate-300  dark:bg-slate-700 rounded-md py-1 px-2'>
             <img src={listing.images[0]} alt="img"
               className='w-16 rounded-md hover:scale-105 transition-all duration-75'
             />
             <Link to={`/listings/${listing._id}`}>
-              <h2 className='font-semibold text-lg text-center hover:underline'>{listing.title}</h2>
+              <h2 className='font-semibold text-lg dark:text-slate-200 text-center hover:underline'>{listing.title}</h2>
             </Link>
 
             {/* actions */}
             <span className="actions flex flex-col">
               <Link to={`/listings/${listing._id}/update`}>
-                <button className='text-green-600 font-semibold hover:text-green-800'>Update</button>
+                <button className='text-green-500 dark:hover:text-green-400 font-semibold hover:text-green-600'>Update</button>
               </Link>
-              <button className='text-red-600 font-semibold hover:text-red-800' onClick={() => handleDeleteListing(listing._id)} >Delete</button>
+              <button className='text-red-600 dark:hover:text-red-500 font-semibold hover:text-red-600' onClick={() => handleDeleteListing(listing._id)} >Delete</button>
             </span>
           </div>
         ))}
