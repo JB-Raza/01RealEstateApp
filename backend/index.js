@@ -41,7 +41,7 @@ app.use("/api/listings", listingRouter)
 
 
 // delete all users
-app.delete("/clear-all", async (req, res, next) => {
+app.delete("/users/clear-all", async (req, res, next) => {
     try {
         const data = await User.deleteMany({})
         res.send(data)

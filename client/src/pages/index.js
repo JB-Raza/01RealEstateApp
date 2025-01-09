@@ -5,7 +5,8 @@ import SignIn from "./SignIn.jsx";
 import SignUp from "./SignUp.jsx";
 import AddListing from './AddListing.jsx'
 import Listing from './Listing.jsx'
+import SearchPage from './SearchPage.jsx'
 
 export {
-    Home, About, Profile, SignIn, SignUp, AddListing, Listing
+    Home, About, Profile, SignIn, SignUp, AddListing, Listing, SearchPage,
 }

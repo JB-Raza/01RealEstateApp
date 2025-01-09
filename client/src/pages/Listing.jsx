@@ -51,29 +51,29 @@ function Listing() {
         <div className="details my-2 mx-4">
 
           {/* title & price */}
-          <h1 className='text-xl md:text-2xl text-slate-900 font-semibold my-5'>
+          <h1 className='text-xl md:text-2xl text-slate-900 dark:text-slate-200 font-semibold my-5'>
             {listing.title}  - Rs.<span> {listing.discount > 0 ? <span> <span className='line-through'>{listing.price}</span> {listing.price - listing.discount}</span> : listing.price} </span> {listing.rentOrSale == "rent" ? "/ night" : ""}</h1>
 
-          <p className='text-slate-700 flex gap-3 items-center'><FontAwesomeIcon className='text-green-400 text-sm' icon={faLocationDot} /> {listing.address}</p>
+          <p className='text-slate-700 dark:text-slate-300 flex gap-3 items-center'><FontAwesomeIcon className='text-green-400 text-sm' icon={faLocationDot} /> {listing.address}</p>
           <div className='my-2 flex gap-2'>
             <p className={`capitalize w-full max-w-[200px] bg-green-900 rounded-md p-1 text-white text-center`}>For {listing.rentOrSale}</p>
             {listing.discount > 0 ? <p className={`capitalize w-full max-w-[200px] bg-red-900 rounded-md p-1 text-white text-center`}>Discount Rs. {listing.discount}</p> : ""}
 
           </div>
           {/* description */}
-          <p className='my-3 text-slate-700'> <span className='font-bold text-lg text-slate-800'>Description - </span> {listing.description}</p>
+          <p className='my-3 text-slate-700 dark:text-slate-400'> <span className='font-bold text-lg text-slate-800 dark:text-slate-300'>Description - </span> {listing.description}</p>
 
           {/* facilities like swimming pool and parking etc. incomplete */}
           <div className="services flex mt-9 flex-wrap gap-3">
             {listing.services && listing.services.map((service, index) => (
               <div key={index} className='flex gap-3'>
-                <p className='text-green-700 font-semibold'>{service}</p>|
+                <p className='text-green-700 dark:text-green-500 font-semibold'>{service}</p><span className='dark:text-white'>|</span>
               </div>
             ))}
           </div>
 
-          {/* contact landlord incomplete */}
-          <button className='uppercase outline-none bg-slate-600 hover:bg-slate-700 mt-5 text-white w-full py-3 rounded-md'>contact landlord</button>
+          {/* contact landlord button incomplete */}
+          <button className='uppercase font-semibold outline-none bg-slate-600 hover:bg-slate-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 mt-5 text-white w-full py-3 rounded-md'>contact landlord</button>
         </div>
 
       </div>

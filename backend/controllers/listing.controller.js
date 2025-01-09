@@ -16,7 +16,7 @@ export const addListing = async (req, res, next) => {
             return image.path
         })
         const data = req.body
-        if (data.discount == "undefined") data.discount = 0
+        if (data.discount == undefined || data.discount == "" || data.discount == null) data.discount = 0
 
         const newListing = new Listing({ ...data, userRef: userId, images })
         await newListing.save()
@@ -103,5 +103,19 @@ export const updateListing = async (req, res, next) => {
         });
     } catch (error) {
         next(errorHandler(500, error.message || "An error occurred while updating the listing"));
+    }
+};
+
+export const searchListings = async (req, res, next) => {
+    try {
+        const { searchTerm } = req?.query;
+        const listings = await Listing.find({ title: { $regex: `${searchTerm}`, $options: "i" } });
+        res.json({
+            success: true,
+            message: "Listings found",
+            listings,
+        });
+    } catch (error) {
+        next(error);
     }
 };

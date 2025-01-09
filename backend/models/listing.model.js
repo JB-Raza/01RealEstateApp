@@ -17,7 +17,7 @@ const listingSchema = new Schema({
     category: {
         type: String,
         default: "Standard",
-        enum: ["Standard", "Mansion", "Villa", "Cottage", "Palace"],
+        enum: ["standard", "mansion", "villa", "cottage", "palace"],
     },
     rentOrSale: {
         type: String,
@@ -38,6 +38,7 @@ const listingSchema = new Schema({
     },
     discount: {
         type: Number,
+        default: 0,
     },
     
     images: {
