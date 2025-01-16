@@ -98,7 +98,7 @@ function AddListing() {
     })
   }
   const handleAddService = () => {
-    if (serviceInput.length > 0) setServices([ ...services, serviceInput ])
+    if (serviceInput.length > 0) setServices([...services, serviceInput])
     setServiceInput("")
   }
 
@@ -182,131 +182,136 @@ function AddListing() {
     <div className='max-w-4xl m-auto'>
       <Alert />
       <h1 className='main-heading text-center'>{isListingEditable ? "Update Listing" : "Create a New Listing"}</h1>
+
       <form
         onSubmit={handleFormSubmit}
         className='flex justify-center flex-wrap items-center flex-col md:flex-row md:items-start md: gap-3 px-4 w-5/6 md:w-auto mx-auto'>
 
         {/* col 1 rest of form */}
-        <div className='first flex-1 w-full'>
-          {/* title */}
-          <input type="text" placeholder='Title' name='title' id='title'
-            className='input-box focus:scale-100 invalid:border-red-400'
-            value={formData.title || ""} maxLength={50} minLength={10} required
-            onChange={handleInputChange}
-          />
-          {/* description */}
-          <textarea name="description" id="description" placeholder='Description'
-            className='input-box focus:scale-100 invalid:border-red-400'
-            value={formData.description || ""} minLength={10} rows={4} required
-            onChange={handleInputChange}
-          ></textarea>
-          {/* category and rent or sale */}
-          <div className='flex gap-2'>
-            {/* category */}
-            <select name="category" id="category" required className='input-box focus:scale-100 invalid:border-red-400'
-              value={formData.category || "standard"} onChange={handleInputChange}
-            >
-              <option value="standard">Standard</option>
-              <option value="villa">Villa</option>
-              <option value="mansion">Mansion</option>
-              <option value="cottage">Cottage</option>
-              <option value="palace">Palace</option>
-            </select>
-            {/* rentOrSale */}
-            <select name="rentOrSale" id="rentOrSale" required className='input-box focus:scale-100 invalid:border-red-400'
-              value={formData.rentOrSale || "rent"} onChange={handleInputChange}
-            >
-              <option value="rent">Rent</option>
-              <option value="sale">Sale</option>
-            </select>
-          </div>
-          {/* address */}
-          <input type="text" placeholder='Address' name='address' id='address' className='input-box focus:scale-100 invalid:border-red-400'
-            value={formData.address || ""} maxLength={75} minLength={10} required
-            onChange={handleInputChange}
-          />
-          {/* price and discount */}
-          <div className='flex gap-2'>
-            {/* price */}
-            <input type="number" placeholder='Price' name='price' id='price'
+          <div className='first flex-1 w-full'>
+            {/* title */}
+            <input type="text" placeholder='Title' name='title' id='title'
               className='input-box focus:scale-100 invalid:border-red-400'
-              value={formData.price || ""} required onChange={handleInputChange}
+              value={formData.title || ""} maxLength={50} minLength={10} required
+              onChange={handleInputChange}
             />
-            {/* discounted price */}
-            <input type="number" placeholder='Discount (in Rupee)' name='discount' id='discount'
+            {/* description */}
+            <textarea name="description" id="description" placeholder='Description'
               className='input-box focus:scale-100 invalid:border-red-400'
-              value={formData.discount || ""} onChange={handleInputChange}
+              value={formData.description || ""} minLength={10} rows={4} required
+              onChange={handleInputChange}
+            ></textarea>
+            {/* category and rent or sale */}
+            <div className='flex gap-2'>
+              {/* category */}
+              <select name="category" id="category" required className='input-box focus:scale-100 invalid:border-red-400'
+                value={formData.category || "standard"} onChange={handleInputChange}
+              >
+                {/* <option value="select">select</option> */}
+                <option value="Standard">Standard</option>
+                <option value="Villa">Villa</option>
+                <option value="Mansion">Mansion</option>
+                <option value="Cottage">Cottage</option>
+                <option value="Palace">Palace</option>
+              </select>
+              {/* rentOrSale */}
+              <select name="rentOrSale" id="rentOrSale" required className='input-box focus:scale-100 invalid:border-red-400'
+                value={formData.rentOrSale || "rent"} onChange={handleInputChange}
+              >
+
+                {/* <option value="select">select</option> */}
+
+                <option value="rent">Rent</option>
+                <option value="sale">Sale</option>
+              </select>
+            </div>
+            {/* address */}
+            <input type="text" placeholder='Address' name='address' id='address' className='input-box focus:scale-100 invalid:border-red-400'
+              value={formData.address || ""} maxLength={75} minLength={10} required
+              onChange={handleInputChange}
             />
+            {/* price and discount */}
+            <div className='flex gap-2'>
+              {/* price */}
+              <input type="number" placeholder='Price' name='price' id='price'
+                className='input-box focus:scale-100 invalid:border-red-400'
+                value={formData.price || ""} required onChange={handleInputChange}
+              />
+              {/* discounted price */}
+              <input type="number" placeholder='Discount (in Rupee)' name='discount' id='discount'
+                className='input-box focus:scale-100 invalid:border-red-400'
+                value={formData.discount || ""} onChange={handleInputChange}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* col 2 contact, images and services*/}
-        <div className='second flex-1 w-full'>
-          {/* contact */}
-          <input type="number" placeholder='Contact No.' name='contact' id='contact'
-          className='input-box focus:scale-100 invalid:border-red-400'
-            required value={formData.contact || ""} onChange={handleInputChange} />
+          {/* col 2 contact, images and services*/}
+          <div className='second flex-1 w-full'>
+            {/* contact */}
+            <input type="number" placeholder='Contact No.' name='contact' id='contact'
+              className='input-box focus:scale-100 invalid:border-red-400'
+              required value={formData.contact || ""} onChange={handleInputChange} />
 
-          {/* add service */}
-          <div className="services-input flex items-center">
-            <input
-              type="text"
-              placeholder="Add Service"
-              value={serviceInput}
-              onChange={(e) => setServiceInput(e.target.value)}
-              className="input-box focus:scale-100 !rounded-r-none invalid:border-red-400"
-            />
+            {/* add service */}
+            <div className="services-input flex items-center">
+              <input
+                type="text"
+                placeholder="Add Service"
+                value={serviceInput}
+                onChange={(e) => setServiceInput(e.target.value)}
+                className="input-box focus:scale-100 !rounded-r-none invalid:border-red-400"
+              />
+              <button
+                type="button"
+                onClick={handleAddService}
+                className="main-button !rounded-l-none active:scale-100 !w-20 "
+              >
+                Add
+              </button>
+            </div>
+
+            {/* Display Services */}
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {services && services.map((service, index) => (
+                <li key={index} className="flex items-center mx-1 p-2 font-bold rounded-md bg-slate-300">
+                  <span className="mr-2">{service}</span>
+
+                  {/* del btn */}
+                  <FontAwesomeIcon icon={faTrash} type='button'
+                    className='text-red-500 cursor-pointer'
+                    onClick={() => setServices(services.filter((service, i) => i !== index))} />
+                </li>
+              ))}
+            </ul>
+
+
+            <p className='text-xs mt-4 mb-0 text-gray-600'> <b>Images:</b> The first Image will be the Cover (max 4) </p>
+            {/* select images */}
+            <input type="file" name='images' id='images' className='input-box focus:scale-100  invalid:border-red-400'
+              accept="image/*" multiple onChange={handleImgChange} />
+
+            {/* selected images previews */}
+            <div className="flex flex-wrap gap-2 flex-col rounded-md mt-2 mb-4">
+              {imgPreviews.map((preview, index) => (
+                <div key={index} className='flex items-center justify-between px-1 py-1 border-4 rounded-md'>
+                  <img
+                    src={preview}
+                    alt={`Preview ${index}`}
+                    className="w-20 object-cover rounded-md border"
+                  />
+                  <FontAwesomeIcon
+                    onClick={() => setImages(images.filter((image, i) => i != index))}
+                    icon={faTrash} className='w-16 cursor-pointer text-red-600 hover:text-red-800' />
+                </div>
+              ))}
+            </div>
+
+            {/* submit button */}
             <button
-              type="button"
-              onClick={handleAddService}
-              className="main-button !rounded-l-none active:scale-100 !w-20 "
-            >
-              Add
-            </button>
+              disabled={loading}
+              className='main-button'
+            >{loading ? "loading..." : <span>{isListingEditable ? "Update Listing" : "Create Listing"}</span>}</button>
           </div>
-
-          {/* Display Services */}
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {services && services.map((service, index) => (
-              <li key={index} className="flex items-center mx-1 p-2 font-bold rounded-md bg-slate-300">
-                <span className="mr-2">{service}</span>
-
-                {/* del btn */}
-                <FontAwesomeIcon icon={faTrash} type='button'
-                  className='text-red-500 cursor-pointer'
-                  onClick={() => setServices(services.filter((service, i) => i !== index))} />
-              </li>
-            ))}
-          </ul>
-
-
-          <p className='text-xs mt-4 mb-0 text-gray-600'> <b>Images:</b> The first Image will be the Cover (max 4) </p>
-          {/* select images */}
-          <input type="file" name='images' id='images' className='input-box focus:scale-100  invalid:border-red-400'
-            accept="image/*" multiple onChange={handleImgChange} />
-
-          {/* selected images previews */}
-          <div className="flex flex-wrap gap-2 flex-col rounded-md mt-2 mb-4">
-            {imgPreviews.map((preview, index) => (
-              <div key={index} className='flex items-center justify-between px-1 py-1 border-4 rounded-md'>
-                <img
-                  src={preview}
-                  alt={`Preview ${index}`}
-                  className="w-20 object-cover rounded-md border"
-                />
-                <FontAwesomeIcon
-                  onClick={() => setImages(images.filter((image, i) => i != index))}
-                  icon={faTrash} className='w-16 cursor-pointer text-red-600 hover:text-red-800' />
-              </div>
-            ))}
-          </div>
-
-          {/* submit button */}
-          <button
-            disabled={loading}
-            className='main-button'
-          >{loading ? "loading..." : <span>{isListingEditable ? "Update Listing" : "Create Listing"}</span>}</button>
-        </div>
       </form>
     </div>
   )

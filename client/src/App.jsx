@@ -5,6 +5,7 @@ function App() {
   const currTheme = useSelector(state => state.theme)
 
   return (
+
     <div className={`${currTheme} bg-slate-100 dark:bg-slate-900 min-w-screen min-h-screen overflow-hidden`}>
       <Header />
       <Outlet />

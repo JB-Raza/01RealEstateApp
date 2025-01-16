@@ -194,7 +194,8 @@ function Profile() {
       </form>
 
       {/* delete and signout user */}
-      <div className='flex justify-between'>
+
+      <div className='flex justify-between my-2'>
         <button onClick={handleDeleteUser} className='text-red-700 dark:text-red-500 font-semibold cursor-pointer'>Delete Account</button>
         <button onClick={handleSignoutUser} className='text-indigo-700 dark:text-indigo-500 font-semibold cursor-pointer'>Sign out</button>
       </div>
