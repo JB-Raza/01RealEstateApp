@@ -18,7 +18,10 @@ function Header() {
         const res = await fetch(`/api/listings/search?searchTerm=${searchTerm}`)
         const data = await res.json()
 
-        navigate(`/search?${searchTerm}`, {state: {listings: data.listings}})
+        if(data.success){
+            navigate(`/search?${searchTerm}`, {state: {listings: data.listings}})
+        }
+        
     }
 
 

@@ -109,7 +109,7 @@ export const updateListing = async (req, res, next) => {
 export const searchListings = async (req, res, next) => {
     try {
         const { searchTerm } = req?.query;
-        const listings = await Listing.find({ title: { $regex: `${searchTerm}`, $options: "i" } });
+        const listings = await Listing.find({ title: { $regex: searchTerm, $options: "i" } });
         res.json({
             success: true,
             message: "Listings found",

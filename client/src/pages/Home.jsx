@@ -1,5 +1,4 @@
-import { useEffect, useState, Suspense } from 'react'
-// import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 // redux states
 import { useDispatch } from 'react-redux'
@@ -11,7 +10,6 @@ import { Alert, Loader, ListingCard } from '../components/index.js'
 function Home() {
 
   const [listings, setListings] = useState([])
-
   const dispatch = useDispatch()
   // welcome notification
   let welcomeNotification = localStorage.getItem("welcomeNotification")
@@ -40,8 +38,10 @@ function Home() {
   return (
     <div className='main'>
       {/* home */}
+
       <Alert />
       <div className='w-full mx-4 md:h-[70vh] flex flex-col gap-5 md:px-10 justify-center min-h-[80vh]'>
+
         <h1 className='text-2xl sm:text-4xl md:text-5xl font-bold text-slate-600 dark:text-slate-500'>Find your next <span className='text-slate-800 dark:text-slate-200'>Perfect</span> <br /> place with ease</h1>
         <p className='text-slate-500 dark:text-slate-400 text-xs sm:text-sm'>Real<b>Estate</b> will help you find your home fast, easy and comfortable. <br />
           Our expert support are always available.</p>
@@ -67,14 +67,14 @@ function Home() {
               <div key={listing._id} className='px-2 my-3 w-full sm:w-1/2 md:w-1/3 '>
                 {/* listing card */}
                 <ListingCard listing={listing} />
-              </div>
+                
+              </div >
             )
-
-
-          )}
-        </div>
-      </div>
-    </div>
+          )
+          }
+        </div >
+      </div >
+    </div >
   )
 }
 export default Home
