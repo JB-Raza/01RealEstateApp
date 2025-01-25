@@ -65,7 +65,7 @@ function Home() {
             // {/* all listings */}
             listings.map((listing) =>
               <div key={listing._id} className='px-2 my-3 w-full sm:w-1/2 md:w-1/3 '>
-                {/* listing card */}
+                {/* listing card  */}
                 <ListingCard listing={listing} />
                 
               </div >

@@ -1,24 +1,11 @@
 -----------------------------------CURRENT functionality --------------------------------------------
 
-<<<<<<< HEAD
-search listing functionality
 
------------------------------------To be applied functionalities ------------------------------------
+home page popular listings in slider
 
-add badge for discount
-add to wishlist functionality. 
-add reviews in listing
-search listing functionality
+validate reviews
 
-Optimize your filter logic using debouncing, useMemo, and pagination for large datasets. (Need to know what are these...)
-
-pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but - only as much as needed. this will improve performance.
-
-=======
-
-// separate the card from allLIstings. i.e make a common component for all the cards.
-// setup createListing form responsiveness
-
+optimization using useMemo and useCallback
 
 
 -----------------------------------To be applied functionalities ------------------------------------
@@ -26,11 +13,10 @@ pagination and (infinite scroll or lazy loading) for displaying listings. this w
 filters with respect to price, discount, popular, cheapest, rent and sale.
 add to wishlist functionality. 
 
-search listing functionality
+search listing functionality (optimized and with more functionalities like filtering garbage words e.g in, of, popular etc)
 
 pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but - only as much as needed. this will improve performance.
 
->>>>>>> 1f0f9c206fba826a981b6b3bfb373ef43dc67e64
 users can add reviews if and only if they have purchased the listing.(after payment, that listing id will be stored in - there user schema where all those listings user has bought will be refrenced in an array.) as:
 - purchaseList: {
 -    type: [array of objectIds of listings user has purchase]
@@ -38,12 +24,22 @@ users can add reviews if and only if they have purchased the listing.(after paym
 delete images of listings as they are deleted from database.
 delete account from firebase when account deleted from database.
 add coupons for discount
+add discount badge
 chat support with client/landlord
 add payment methods
 add security, web-vitals
 recover account by email
 
+Optimize your filter logic using debouncing, useMemo, and pagination for large datasets. (Need to know what are these...)
+
 optimize site data fetching methods and displaying techniques like fetching preview of image instead of whole listing image and displaying. 
+
+pagination == data on several pages only fetches the data when user go on to the required page.
+async logging ==
+caching data == (tool == redis)
+payload compression. shrink data size before sending and recieving. (tool == gzip)
+connection pool == avoid the overhead of opening and closing db connections. connection pool keeps these connections ready to go.
+
 
 code revisions mendatory X 2 times
 
@@ -56,96 +52,14 @@ fixing responsiveness of image sliders for listing
 cannot delete user through profile page button.
 validation error: services must be an array when sending single service.
 need to learn more about promises and Promise.all().
-<<<<<<< HEAD
+
 cannot delete all image previews. also when updating listing, if i select a new image, all other images will be removed and maybe the images in the database updates as intended or not.
-=======
+
 cannot delete all image previews.
+
 when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin - to get that data in my state.
->>>>>>> 1f0f9c206fba826a981b6b3bfb373ef43dc67e64
 
 LOOK:
 look for weak points in my site. for example to update user information, if the user hasn't updated any information and - try to submit the form, the request is sent to server for update even if the user hasn't added any extra information. - This might effect site's performance as hackers can send many fake requests.
 
 
-
-
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 1f0f9c206fba826a981b6b3bfb373ef43dc67e64
--------------------DARK MODE----------------
-
-
-Element 	Background Color	Text Color  	Border/Shadow Color	    Hover/Active Color
-Body	    bg-slate-900    	text-gray-200	border-slate-800	    bg-slate-800
-Header	    bg-slate-800	    text-white	    border-slate-700    	bg-slate-700
-Heading	    N/A	                text-gray-100	N/A	                    N/A
-Links	    N/A	                text-indigo-400	border-slate-700        text-indigo-300
-Cards	    bg-slate-800	    text-gray-200	border-slate-700	    bg-slate-700
-Buttons	    bg-indigo-600	    text-white	    shadow-indigo-900	    bg-indigo-500
-
-
-<<<<<<< HEAD
-=======
- Dark Theme Styling Tips:
-Use text-white or text-gray-200 for text on dark backgrounds.
-Add subtle shadows with shadow-slate-900 for a more elevated look.
-For links, use text-indigo-400 to make them stand out, with a hover effect in text-indigo-300.
-
-
->>>>>>> 1f0f9c206fba826a981b6b3bfb373ef43dc67e64
--------------------LIGHT MODE----------------
-
-
-
-Element	    Background Color	Text Color	        Border/Shadow Color	    Hover/Active Color
-Body	    bg-gray-100     	text-gray-800	    border-gray-300     	bg-gray-200-----------------------------------
-Header	    bg-white	        text-gray-900   	border-gray-300	        bg-gray-100-----------------------------------
-Heading	    N/A	                text-gray-900	    N/A                 	N/A-----------------------------------
-Links	    N/A	                text-indigo-600    	N/A                 	text-indigo-500-----------------------------------
-Cards	    bg-white	        text-gray-800	    border-gray-300	        bg-gray-100-----------------------------------
-Buttons	    bg-indigo-500	    text-white	        shadow-indigo-300	    bg-indigo-400
-
-<<<<<<< HEAD
-
------------------------------------------------------------------------------------------------------------
-i have a ton of listings to display. i am showing each listing card having an image tag and other details now i am displaying 1 image of each listing here in home page but since i am fetching the whole listing, i am fetching all the images of listings from the server. the question is should i make a separate route in backend to fetch only 1 listing image here for home page. will it improve the site performance. right now i have 1 route to fetch listing as i am using same route to fetch listings of home page and on listing page where i am showing specific listing having all images as image slider. so should i make a separate route for fetching listing for home page and for listing page.
-
-also i am fetching image and displaying it as image. is there any way to show only the preview of the image which might reduce the load time to fetch data.
-=======
-Light Theme Styling Tips:
-Use bg-white for cards and headers to give a clean and minimal look.
-For text, stick with text-gray-800 or text-gray-900 for high readability.
-Use text-indigo-600 for links to maintain consistency with buttons.
-
-
--------------------EXTRA STYLING TIPS----------------
-
-🎯 Suggested Tailwind Classes for Key Elements
-Element	Dark Theme Classes	Light Theme Classes
-Body	bg-slate-900 text-gray-200	bg-gray-100 text-gray-800
-Header	bg-slate-800 text-white border-b border-slate-700	bg-white text-gray-900 border-b border-gray-300
-Heading	text-gray-100	text-gray-900
-Links	text-indigo-400 hover:text-indigo-300	text-indigo-600 hover:text-indigo-500
-Cards	bg-slate-800 text-gray-200 border border-slate-700	bg-white text-gray-800 border border-gray-300
-Buttons	bg-indigo-600 text-white hover:bg-indigo-500	bg-indigo-500 text-white hover:bg-indigo-400
->>>>>>> 1f0f9c206fba826a981b6b3bfb373ef43dc67e64

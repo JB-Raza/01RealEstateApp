@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react'
+import ReactStars from "react-rating-stars-component";
 import { useParams } from 'react-router-dom'
 
-// swiper slider
-import Slider from '../components/Slider.jsx'
-
 // components
-import {Loader} from '../components/index.js'
+import { Loader, Alert, Slider } from '../components/index.js'
+import { setNotification } from '../redux/notificationSlice.js'
+import { useDispatch } from 'react-redux'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 
 
 function Listing() {
+  const [loading, setLoading] = useState(false)
   const [listing, setListing] = useState({})
+  const [listingReviews, setListingReviews] = useState([])
+  const [review, setReview] = useState({ rating: 0, comment: "" })
   const { id } = useParams()
+
+  const dispatch = useDispatch()
 
   // fetch listing
   useEffect(() => {
@@ -25,17 +30,74 @@ function Listing() {
       }
     }
     fetchListing();
-  }, [])
+  }, [id])
+
+  // fetch listing reviews
+  useEffect(() => {
+    const fetchListingReviews = async () => {
+      try {
+        const res = await fetch(`/api/listings/${id}/reviews/`);
+        const data = await res.json();
+  
+        if (!data.success) {
+          return dispatch(setNotification({ type: "failure", message: data.message }));
+        }
+  
+        setListingReviews(data.reviews);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+        dispatch(setNotification({ type: "failure", message: "Failed to fetch reviews." }));
+      }
+    };
+  
+    fetchListingReviews(); // Call the async function
+  }, [id]);
+  
+  const handleReviewChange = (e) => {
+    setReview({
+      ...review,
+      [e.target.id]: e.target.value
+    })
+  }
+
+  // add review
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/listings/${id}/reviews/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(review)
+      })
+
+      const data = await res.json()
+      if (data.success) {
+        dispatch(setNotification({ type: "success", message: data.message }))
+        setLoading(false)
+        return
+      }
+      // dispatch(setNotification({ type: "failure", message: data.message }))
+      // setLoading(false)
+      // return
+    } catch (error) {
+      dispatch(setNotification({ type: "failure", message: error.message }))
+      setLoading(false)
+    }
+  }
 
   // adding loaders while page is not ready to render
-  if(!listing.images){
+  if (!listing.images) {
     return <Loader />
   }
   return (
     <div>
+      <Alert />
       {/* slider */}
       <div className="banner bg-black">
-        
+
         {/* available status */}
         <div className={`z-50 status absolute text-white rounded-full px-2 py-1 shadow-md hover:shadow-lg m-2 ${listing.availabilityStatus ? "bg-green-500" : "bg-red-500"}`}>
           {listing.availabilityStatus ? "Available" : "Not Available"}
@@ -43,9 +105,9 @@ function Listing() {
 
         {/* images slider */}
         <Slider images={listing.images} />
-        
+
       </div>
-      
+
       {/* other details */}
       <div className='max-w-[900px] mx-auto p-3'>
         <div className="details my-2 mx-4">
@@ -75,7 +137,52 @@ function Listing() {
           {/* contact landlord button incomplete */}
           <button className='uppercase font-semibold outline-none bg-slate-600 hover:bg-slate-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 mt-5 text-white w-full py-3 rounded-md'>contact landlord</button>
         </div>
+      </div>
 
+      {/* add reviews */}
+      <form className='max-w-[900px] mx-auto p-7'
+        onSubmit={handleReviewSubmit}
+      >
+        <h1 className='main-heading !text-3xl'>Add a reivew</h1>
+
+        {/* rating */}
+        <ReactStars
+          count={5} size={35}
+          isHalf={true} activeColor="#ffd700"
+          onChange={(currRating) => setReview({ ...review, rating: currRating })}
+        />
+
+        {/* comment */}
+        <textarea name="comment" id="comment"
+          value={review.comment}
+          onChange={handleReviewChange}
+          placeholder='Write your reviews about this place to help others take a right decision'
+          className='input-box focus:scale-100 invalid:border-red-400'
+          minLength={10} rows={4} required
+        ></textarea>
+        <button className="main-button">{loading ? "Adding..." : "Add Review"}</button>
+      </form>
+
+      {/* show reviews */}
+      <div className='max-w-[900px] mx-auto p-7'>
+        <h1 className='main-heading !text-3xl'>Reviews</h1>
+        <div className='flex flex-col sm:flex-row flex-wrap basis-1/2'>
+          {listingReviews && listingReviews.map((review) => (
+            <div key={review._id} className='w-full sm:w-1/2 p-2'>
+              <div className="bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-400 py-3 px-5 rounded-md">
+                <h3 className='font-semibold dark:text-slate-200'>By : {review.userRef.username}</h3>
+                <div className="data mt-4">
+                  <ReactStars
+                    count={5} size={24}
+                    edit={false} isHalf={true} activeColor="#ffd700"
+                    value={review.rating}
+                  />
+                  <p>{review.comment}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

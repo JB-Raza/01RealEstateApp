@@ -21,7 +21,7 @@ function Alert() {
     
 
     return !notification.type ? "" : (
-        <div>
+        <div className='z-50'>
             <div className={`alert ${notification.type == "success" ? "bg-green-500" : "bg-red-500"} text-white rounded-md max-w-xl min-w-[300px]`} role="alert">
                 <div className='flex flex-col gap-2'>
                     <p className='text-xs md:text-sm'>{notification.message}</p>

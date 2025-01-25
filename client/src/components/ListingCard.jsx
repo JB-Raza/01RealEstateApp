@@ -17,7 +17,7 @@ function ListingCard({ listing }) {
         <img className="w-full h-52 rounded-t-md hover:scale-105 transition-all duration-200" src={listing.images[0]} />
         <div className="px-4 py-3 flex flex-col gap-2">
           {/* title */}
-          <h3 className="font-semibold text-slate-900 dark:text-slate-200 text-md">{truncateText(listing.title, 30)}</h3>
+          <h3 className="font-semibold text-slate-900 dark:text-slate-200 text-md">{truncateText(listing.title, 40)}</h3>
           {/* address */}
           <p className=' text-xs text-slate-800 dark:text-slate-300 flex gap-1 font-semibold items-center'>
             <FontAwesomeIcon className='text-green-600 text-sm' icon={faLocationDot} /> {truncateText(listing.address, 35)}</p>

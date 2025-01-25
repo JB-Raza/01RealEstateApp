@@ -6,24 +6,27 @@ import cookieParser from 'cookie-parser'
 // models
 import User from './models/user.model.js'
 import Listing from './models/listing.model.js'
+import Review from './models/review.model.js'
 // routes 
 import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
 import listingRouter from './routes/listing.route.js'
+import reviewRouter from './routes/review.route.js'
 
+dotenv.config()
 const mongoConnection = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL)
         console.log("Connected to MongoDB");
-    }  catch (error) {
+    } catch (error) {
         console.log("ERROR in Mongo connection == ", error);
-        if (error.cause) {
-            console.log("Cause details Sire: ", error.cause);
-        }
+        // if (error.cause) {
+        //     console.log("Cause details Sire: ", error.cause);
+        // }
     }
 }
 await mongoConnection()
-dotenv.config()
+
 
 
 app.listen(3000, () => console.log("server active on 3000"))
@@ -37,7 +40,7 @@ app.use(cookieParser())
 app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/listings", listingRouter)
-
+app.use("/api/listings/:listingId/reviews", reviewRouter)
 
 
 // delete all users
@@ -49,9 +52,21 @@ app.delete("/users/clear-all", async (req, res, next) => {
         next(error)
     }
 })
+
+// delete all listings
 app.delete("/listings/clear-all", async (req, res, next) => {
     try {
         const data = await Listing.deleteMany({})
+        res.send(data)
+    } catch (error) {
+        next(error)
+    }
+})
+
+// delete all reviews
+app.delete("/reviews/clear-all", async (req, res, next) => {
+    try {
+        const data = await Review.deleteMany({})
         res.send(data)
     } catch (error) {
         next(error)
