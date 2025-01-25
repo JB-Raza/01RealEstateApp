@@ -20,9 +20,6 @@ const mongoConnection = async () => {
         console.log("Connected to MongoDB");
     } catch (error) {
         console.log("ERROR in Mongo connection == ", error);
-        // if (error.cause) {
-        //     console.log("Cause details Sire: ", error.cause);
-        // }
     }
 }
 await mongoConnection()

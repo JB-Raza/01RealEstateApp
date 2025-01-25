@@ -1,5 +1,20 @@
 -----------------------------------CURRENT functionality --------------------------------------------
 
+search listing functionality
+
+-----------------------------------To be applied functionalities ------------------------------------
+
+add badge for discount
+add to wishlist functionality. 
+add reviews in listing
+search listing functionality
+
+Optimize your filter logic using debouncing, useMemo, and pagination for large datasets. (Need to know what are these...)
+
+pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but - only as much as needed. this will improve performance.
+
+=======
+>>>>>>> 08890a0f86ffc7cb9e2826a5224105da62eda46f
 
 home page popular listings in slider
 
@@ -58,8 +73,9 @@ cannot delete all image previews. also when updating listing, if i select a new 
 cannot delete all image previews.
 
 when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin - to get that data in my state.
+cannot delete all image previews. also when updating listing, if i select a new image, all other images will be removed and maybe the images in the database updates as intended or not.
+cannot delete all image previews.
+when i signup with google, the data of user is saved in mongodb but it does not save in redux state. i have to relogin - to get that data in my state.
 
 LOOK:
 look for weak points in my site. for example to update user information, if the user hasn't updated any information and - try to submit the form, the request is sent to server for update even if the user hasn't added any extra information. - This might effect site's performance as hackers can send many fake requests.
-
-

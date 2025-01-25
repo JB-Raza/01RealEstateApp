@@ -27,3 +27,9 @@ export const userSchema = joi.object({
     password: joi.string().required(),
     avatar: joi.string(),
 })
+
+
+export const reviewSchema = joi.object({
+    rating: joi.number().required(),
+    comment: joi.string()
+})
