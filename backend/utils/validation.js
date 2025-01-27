@@ -1,5 +1,5 @@
 import { errorHandler } from './error.js'
-import { listingSchema, userSchema } from '../schema.js'
+import { listingSchema, userSchema, reviewSchema } from '../schema.js'
 
 export const validateListing = async (req, res, next) => {
     try {
@@ -13,6 +13,7 @@ export const validateListing = async (req, res, next) => {
         next(errorHandler(500, error.message))
     }
 }
+
 export const validateUser = async (req, res, next) => {
     try {
         const { error } = userSchema.validate(req.body, { abortEarly: false })
@@ -26,4 +27,14 @@ export const validateUser = async (req, res, next) => {
         next(errorHandler(500, error.message))
     }
 
+}
+
+export const validateReview = async (req, res, next) => {
+    try {
+        const { error } = reviewSchema.validate(req.body)
+        if (error) return next(errorHandler(400, error.details[0].message))
+        next()
+    } catch (error) {
+        next(errorHandler(500, error.message))
+    }
 }

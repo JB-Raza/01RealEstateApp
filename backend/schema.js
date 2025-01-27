@@ -31,5 +31,5 @@ export const userSchema = joi.object({
 
 export const reviewSchema = joi.object({
     rating: joi.number().required(),
-    comment: joi.string()
+    comment: joi.string(),
 })

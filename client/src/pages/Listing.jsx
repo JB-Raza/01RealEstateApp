@@ -2,57 +2,73 @@ import React, { useEffect, useState } from 'react'
 import ReactStars from "react-rating-stars-component";
 import { useParams } from 'react-router-dom'
 
+// redux state
+import { useSelector, useDispatch } from 'react-redux'
+import { setNotification } from '../redux/notificationSlice.js'
+
 // components
 import { Loader, Alert, Slider } from '../components/index.js'
-import { setNotification } from '../redux/notificationSlice.js'
-import { useDispatch } from 'react-redux'
+
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
-
+import { faLocationDot, faTrash, faPen } from '@fortawesome/free-solid-svg-icons'
 
 function Listing() {
   const [loading, setLoading] = useState(false)
   const [listing, setListing] = useState({})
   const [listingReviews, setListingReviews] = useState([])
-  const [review, setReview] = useState({ rating: 0, comment: "" })
+  const [avgRating, setAvgRating] = useState(0)
+  const [review, setReview] = useState({ reviewId: null, rating: 0, comment: "" })
   const { id } = useParams()
 
+  const currUser = useSelector((state) => state.user.currentUser)
   const dispatch = useDispatch()
 
+
   // fetch listing
-  useEffect(() => {
-    const fetchListing = async () => {
-      const res = await fetch(`/api/listings/${id}`)
-      if (res.ok) {
-        const data = await res.json()
-        setListing(data)
-      }
+  const fetchListing = async () => {
+    const res = await fetch(`/api/listings/${id}`)
+    if (res.ok) {
+      const data = await res.json()
+      setListing(data)
     }
+  }
+  useEffect(() => {
     fetchListing();
   }, [id])
 
   // fetch listing reviews
-  useEffect(() => {
-    const fetchListingReviews = async () => {
-      try {
-        const res = await fetch(`/api/listings/${id}/reviews/`);
-        const data = await res.json();
-  
-        if (!data.success) {
-          return dispatch(setNotification({ type: "failure", message: data.message }));
-        }
-  
-        setListingReviews(data.reviews);
-      } catch (error) {
-        console.error("Failed to fetch reviews:", error);
-        dispatch(setNotification({ type: "failure", message: "Failed to fetch reviews." }));
+  const fetchListingReviews = async () => {
+    try {
+      const res = await fetch(`/api/listings/${id}/reviews/`);
+      const data = await res.json();
+
+      if (!data.success) {
+        dispatch(setNotification({ type: "failure", message: data.message }));
+        return
       }
-    };
-  
+      setListingReviews(data.reviews);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+      dispatch(setNotification({ type: "failure", message: "Failed to fetch reviews." }));
+    }
+  };
+  useEffect(() => {
     fetchListingReviews(); // Call the async function
   }, [id]);
-  
+
+  // calculate average rating
+  const calculateAverageRating = () => {
+    if (listingReviews.length === 0) {
+      return 0;
+    }
+    const totalRating = listingReviews.reduce((total, review) => total + review.rating, 0);
+    setAvgRating(totalRating / listingReviews.length);
+  }
+  useEffect(() => {
+    calculateAverageRating()
+  }, [listingReviews])
+
   const handleReviewChange = (e) => {
     setReview({
       ...review,
@@ -67,31 +83,71 @@ function Listing() {
       setLoading(true)
       const res = await fetch(`/api/listings/${id}/reviews/add`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(review)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: review.rating,
+          comment: review.comment
+        })
       })
-
       const data = await res.json()
       if (data.success) {
         dispatch(setNotification({ type: "success", message: data.message }))
         setLoading(false)
         return
       }
-      // dispatch(setNotification({ type: "failure", message: data.message }))
-      // setLoading(false)
-      // return
+    } catch (error) {
+      dispatch(setNotification({ type: "failure", message: error.message }))
+      setLoading(false)
+    }
+  }
+  // update review
+  const handleUpdateReview = async (e) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/listings/${id}/reviews/edit/${review.reviewId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: review.rating,
+          comment: review.comment,
+        })
+      })
+      const data = await res.json()
+      if (data.success) {
+        dispatch(setNotification({ type: "success", message: data.message }))
+        setLoading(false)
+        return
+      }
     } catch (error) {
       dispatch(setNotification({ type: "failure", message: error.message }))
       setLoading(false)
     }
   }
 
-  // adding loaders while page is not ready to render
-  if (!listing.images) {
-    return <Loader />
+  // delete review
+  const handleDelReview = async (reviewId) => {
+    try {
+      const res = await fetch(`/api/listings/${id}/reviews/delete/${reviewId}`, {
+        method: "DELETE"
+      })
+      const data = await res.json()
+      if (data.success) {
+        dispatch(setNotification({ type: "success", message: data.message }))
+        setListingReviews(prev => {
+          return prev.filter(review => review._id !== reviewId)
+        })
+        return
+      }
+      dispatch(setNotification({ type: "failure", message: data.message }))
+    } catch (error) {
+      dispatch(setNotification({ type: "failure", message: error.message }))
+    }
   }
+
+  // adding loaders while page is not ready to render
+  if (!listing.images) return <Loader />
+
   return (
     <div>
       <Alert />
@@ -105,7 +161,6 @@ function Listing() {
 
         {/* images slider */}
         <Slider images={listing.images} />
-
       </div>
 
       {/* other details */}
@@ -141,15 +196,17 @@ function Listing() {
 
       {/* add reviews */}
       <form className='max-w-[900px] mx-auto p-7'
-        onSubmit={handleReviewSubmit}
+        onSubmit={review.reviewId ? handleUpdateReview : handleReviewSubmit}
       >
-        <h1 className='main-heading !text-3xl'>Add a reivew</h1>
+        <h1 className='main-heading'>{review.reviewId ? "Update Review" : "Add a new Review"}</h1>
 
         {/* rating */}
         <ReactStars
+          key={review.rating}
           count={5} size={35}
           isHalf={true} activeColor="#ffd700"
-          onChange={(currRating) => setReview({ ...review, rating: currRating })}
+          value={review.rating}
+          onChange={(newRating) => setReview({ ...review, rating: newRating })}
         />
 
         {/* comment */}
@@ -160,17 +217,39 @@ function Listing() {
           className='input-box focus:scale-100 invalid:border-red-400'
           minLength={10} rows={4} required
         ></textarea>
-        <button className="main-button">{loading ? "Adding..." : "Add Review"}</button>
+        <button className="main-button">{loading ? "Loading..." : review.reviewId ? "Update Review" : "Add Review"}</button>
       </form>
-
       {/* show reviews */}
       <div className='max-w-[900px] mx-auto p-7'>
         <h1 className='main-heading !text-3xl'>Reviews</h1>
-        <div className='flex flex-col sm:flex-row flex-wrap basis-1/2'>
+        {avgRating > 0 ?
+          <div className="avg-reviews flex items-center gap-4 my-3">
+            <ReactStars count={5} size={24}
+              edit={false} isHalf={true} activeColor="#ffd700"
+              value={avgRating}
+            />
+            <p className='text-slate-600 dark:text-slate-400 font-semibold text-sm sm:text-lg'>{listingReviews.length} Reviews</p>
+          </div>
+          : ""
+        }
+        <div className='flex flex-col sm:flex-row flex-wrap'>
           {listingReviews && listingReviews.map((review) => (
             <div key={review._id} className='w-full sm:w-1/2 p-2'>
               <div className="bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-400 py-3 px-5 rounded-md">
-                <h3 className='font-semibold dark:text-slate-200'>By : {review.userRef.username}</h3>
+                <div className='flex justify-between'>
+                  <h3 className='font-semibold dark:text-slate-200'>By : {review.userRef.username}</h3>
+                  {currUser && currUser._id !== review.userRef._id ? "" :
+                    <div className='text black dark:text-white flex gap-3'>
+                      <FontAwesomeIcon icon={faPen}
+                        onClick={() => setReview({ reviewId: review._id, rating: review.rating, comment: review.comment })}
+                        className='text-green-500 hover:scale-110 text-sm cursor-pointer'
+                      />
+                      <FontAwesomeIcon onClick={() => handleDelReview(review._id)}
+                        className='text-red-500 hover:scale-110 text-sm cursor-pointer' icon={faTrash} />
+                    </div>
+                  }
+                </div>
+
                 <div className="data mt-4">
                   <ReactStars
                     count={5} size={24}

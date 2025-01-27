@@ -1,24 +1,34 @@
+checked performance using LightHouse in chrome.
+what is text compression (for performance)
+check unused JS code and remove them.
+check for render blocking recources
+minimize main thread work (reduce time spent on parsing, compiling and executing JS code)
+concept of preloading Largest contentful paint (like banner images or videos)
+
+
 -----------------------------------CURRENT functionality --------------------------------------------
 
-search listing functionality
+update review
+set required review in form
+set put request with review id
+make update request
+
+-------------------------------------------Edge cases --------------------------------------------
+
+when logged out, a person tries to add a review. (handle in frontend)
+
 
 -----------------------------------To be applied functionalities ------------------------------------
 
 add badge for discount
 add to wishlist functionality. 
-add reviews in listing
-search listing functionality
 
+search listing functionality (optimized and with more functionalities like filtering garbage words e.g in, of, popular etc)
 Optimize your filter logic using debouncing, useMemo, and pagination for large datasets. (Need to know what are these...)
 
 pagination and (infinite scroll or lazy loading) for displaying listings. this will not fetch all listings at once but - only as much as needed. this will improve performance.
 
-=======
->>>>>>> 08890a0f86ffc7cb9e2826a5224105da62eda46f
-
 home page popular listings in slider
-
-validate reviews
 
 optimization using useMemo and useCallback
 
@@ -79,3 +89,21 @@ when i signup with google, the data of user is saved in mongodb but it does not 
 
 LOOK:
 look for weak points in my site. for example to update user information, if the user hasn't updated any information and - try to submit the form, the request is sent to server for update even if the user hasn't added any extra information. - This might effect site's performance as hackers can send many fake requests.
+
+
+
+
+functionalities:
+signup using google firebase
+simple signup with all validation and password encryption
+login with google or email and password, logout, delete account
+jwt authentication
+validate listing, user, review, authenticate user, listing.
+add listing, delete listing, update listing, images of listing as slider, add review, delete review, update review
+
+home page popular listings in slider
+react router dom usage for routing,
+redux for managing global state of user, dark theme, notification
+simple search functionality
+profile page with all details of user, update user information
+
